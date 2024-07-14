@@ -4,11 +4,11 @@ import checkSvg from "../../../assets/check.svg"
 
 export default function FuncSection() {
     return (
-        <div className='Func w-full px-4 md:px-10 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
+        <div className='Func w-full px-4 md:px-5 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
 
 
             <p className='font-semibold md:text-[36px] text-[24px] text-textColor max-w-[1200px]'>
-                Упростите свои покупки с помощью Premium Pay: Начните прямо сейчас
+                Упростите свои покупки с помощью Diametr: Начните прямо сейчас
             </p>
 
             <p className='text-[18px] text-textColor max-w-[600px] '>

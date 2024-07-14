@@ -16,6 +16,7 @@ import Chatbox from './sections/chatbox';
 
 
 import { AnimationScope, motion, useAnimate, useAnimation, useInView } from "framer-motion"
+import  News  from './sections/news'
 
 export default function Home() {
   // const { t } = useTranslation()
@@ -59,7 +60,8 @@ export default function Home() {
 
       <Customer />
 
-      <FunctSection />
+      {/* <FunctSection /> */}
+      <News />
       <Questions />
       {/* <Team /> */}
 

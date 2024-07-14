@@ -65,7 +65,7 @@ export default function Team() {
 
     ]
     return (
-        <div id="Team" className='Team w-full px-4 md:px-10 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
+        <div id="Team" className='Team w-full px-4 md:px-5 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
 
             <span className='text-primary bg-secondary rounded-full px-4 py-2 '>Команда</span>
             <p className='font-semibold md:md:text-[36px] text-[24px] text-[18px]  text-textColor max-w-[1200px]'>

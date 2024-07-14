@@ -4,14 +4,22 @@ import mobileSvg from "../../../assets/mobile.svg"
 import emailSvg from "../../../assets/email.svg"
 
 
-import customer1 from "../../../assets/customer1.png"
-import customer2 from "../../../assets/customer2.png"
-import customer3 from "../../../assets/customer3.png"
-import customer4 from "../../../assets/customer4.png"
+// import customer1 from "../../../assets/customer1.png"
+let customer1 ="https://daryo.uz/static/2018/01/alibazar-1.jpg"
+// import customer2 from "../../../assets/customer2.png"
+let customer2= "https://frankfurt.apollo.olxcdn.com/v1/files/hj87ugov0ahj3-UZ/image;s=1500x2000"
+
+let customer4 ="https://static.xabar.uz/crop/5/6/720_460_95_562674108.jpg"
+// import customer3 from "../../../assets/customer3.png"
+let customer3 ="https://www.prom.uz/_ipx/f_webp/https://devel.prom.uz/upload/reduced/product_logos/e0/92/e09254aff23258e03be5b1bb79b46c39.jpeg"
+
+// import customer4 from "../../../assets/customer4.png"
+
+
 
 export default function Customer() {
     return (
-        <div id="Customer" className='Customer w-full px-4 md:px-10 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
+        <div id="Customer" className='Customer w-full px-4 md:px-5 py-20 min-h-[500px]  flex flex-col items-center space-y-1 text-center'>
 
             <span className='text-primary bg-secondary rounded-full px-4 py-2 '>Наши возможности</span>
             <p className='font-semibold md:text-[36px] text-[24px] text-textColor'>
@@ -69,21 +77,21 @@ export default function Customer() {
 
                 <div className='hidden flex-row justify-between gap-[32px] lg:flex'>
                     <div className=' w-[280px] flex flex-col  justify-center gap-[32px]'>
-                        <img className='w-full h-[332px] rounded-[15px]' src={customer1}>
+                        <img className='w-full h-[332px] rounded-[15px] bg-secondary object-cover ' src={customer1}>
 
                         </img>
 
-                        <img className='w-full  h-[198px] rounded-[15px]' src={customer2}>
+                        <img className='w-full  h-[198px] rounded-[15px] bg-secondary  object-cover ' src={customer2}>
 
                         </img>
 
                     </div>
                     <div className=' w-[280px] flex flex-col  justify-center gap-[32px]'>
 
-                        <img className='w-full  h-[198px] rounded-[15px]' src={customer3}>
+                        <img className='w-full  h-[198px] rounded-[15px]  object-cover ' src={customer3}>
 
                         </img>
-                        <img className='w-full  h-[332px]  rounded-[15px]' src={customer4}>
+                        <img className='w-full  h-[332px]  rounded-[15px]  object-cover ' src={customer4}>
 
                         </img>
 

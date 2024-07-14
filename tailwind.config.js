@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -8,7 +10,9 @@ module.exports = {
         secondary: "rgba(0, 196, 140, 0.25)",
         textColor: "#002966",
         textGrey: "#667085",
+        primary_gr:"rgba(0, 194, 139, 0.68)"
       },
+      
     },
   },
   plugins: [require("daisyui")],

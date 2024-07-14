@@ -57,9 +57,9 @@ export default function Navbar() {
   const [showMenu, setMenu] = useState(false);
 
   return (
-    <header className='w-full  md:px-10 px-4 py-5 '>
+    <header className='w-full  md:px-5 px-4 py-5 '>
       <nav className='flex flex-row justify-between items-center'>
-        <img src={logo} alt="PremiumPay" className='w-[180px] cursor-pointer' />
+        <img src={logo} alt="Diametr" className='w-[250px] cursor-pointer' />
         <div className='font-semibold flex-row flex items-center'>
           
           <div className='items-center flex-row hidden lg:flex'>
@@ -90,7 +90,7 @@ export default function Navbar() {
           showMenu && <div className='lg:hidden fixed flex-col items-start px-4 py-5 bg-white  inset-0 transition-opacity duration-700 ease-in-out z-20'>
 
               <div className='flex justify-between text-white'>
-              <img src={logo} alt="PremiumPay" className='w-[180px] cursor-pointer' />
+              <img src={logo} alt="Diametr" className='w-[180px] cursor-pointer' />
 
                   <button className='flex flex-row items-center justify-center' onClick={() => setMenu(false)}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="#00C48C" className="w-10 h-10">
@@ -116,19 +116,13 @@ export default function Navbar() {
           </div>
 
           <div className='flex-row flex  items-center gap-2'>
-            <div className="dropdown dropdown-hover "  >
+            {/* <div className="dropdown dropdown-hover "  >
 
               <div tabIndex={0} role="button" className="btn  bg-primary text-white uppercase flex flex-row items-center h-[62px] py-0 justify-center"><img src={langs.find(l => l.title == t("language"))?.flag} className='rounded-full w-[14px] h-[14px] object-cover object-center' alt="" /> <span>{t("language")}</span></div>
-              {/* <summary tabIndex={0} role="button"  className="m-1 btn bg-primary text-white uppercase" onClick={(event: React.MouseEvent) => {
-  showMenu(event)
-  console.log(">>>",menuOpen);
-  
-  toggleMenu((prev)=>!prev)
-}}>{t("language")}</summary> */}
+       
 
 
-
-              <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box" >
+               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box" >
                 {
                   langs.map((e) => {
 
@@ -144,15 +138,15 @@ export default function Navbar() {
 
                   })
                 }
-              </ul>
+              </ul> 
 
 
-            </div>
+            </div> */}
 
 
 
 
-            <button className="btn bg-primary  text-white  text-md  h-[62px]">Скачать</button>
+            <button className="btn bg-primary  text-white  text-md  h-[62px]">Yuklash</button>
           </div>
 
                

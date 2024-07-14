@@ -37,11 +37,11 @@ export default function Footer() {
         }
     ];
     return (
-        <div id="Footer" className='Footer   w-screen  px-4 md:px-10 pt-20  flex flex-col items-center space-y-1 text-center'>
+        <div id="Footer" className='Footer   w-screen  px-4 md:px-5 pt-20  flex flex-col items-center space-y-1 text-center'>
 
             <div className='w-full min-h-[228px] flex md:flex-row md:items-start items-center gap-y-10 flex-col  mb-[32px] justify-between'>
                 <div className='max-w-[420px]  flex flex-col md:items-start items-center justify-between gap-y-2'>
-                    <div className='md:items-start gap-2 flex flex-col items-center'>   <img src={logo} alt="PremiumPay" className='max-w-[187px] cursor-pointer' />
+                    <div className='md:items-start gap-2 flex flex-col items-center'>   <img src={logo} alt="Diametr" className='max-w-[187px] cursor-pointer' />
                         <span className='text-[16px] text-textColor md:text-start text-center'>Biz bilan istalgan xaridingizni oson amalga oshiring </span>
                     </div>
                     <div className='flex flex-row items-center justify-start gap-2 stroke-2'>

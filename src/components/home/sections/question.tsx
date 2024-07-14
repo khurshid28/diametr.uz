@@ -6,31 +6,28 @@ import emailSvg from "../../../assets/email.svg"
 export default function Questions() {
     const questionData = [
         {
-            "title": "На какой срок дается лимит?",
-            "answer": "Это специальный программный продукт партнерской организации, интегрированный в информационные ресурсы Банка, который используется Заемщиком/клиентом для приобретения товаров онлайн в кредит у партнерской организации и/или торговых точек ее партнеров;"
+            "title": "Diametr.uz  nima va kimlarga kerak?",
+            "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex "
         },
         {
-            "title": "Что делает система Premium Pay?",
-            "answer": "Это специальный программный продукт партнерской организации, интегрированный в информационные ресурсы Банка, который используется Заемщиком/клиентом для приобретения товаров онлайн в кредит у партнерской организации и/или торговых точек ее партнеров;"
+            "title": "Diametr.uz  nima va kimlarga kerak?",
+            "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex "
         },
         {
-            "title": "Что будет, если деньги не выплатят вовремя?",
-            "answer": "Это специальный программный продукт партнерской организации, интегрированный в информационные ресурсы Банка, который используется Заемщиком/клиентом для приобретения товаров онлайн в кредит у партнерской организации и/или торговых точек ее партнеров;"
-        },
-
-        {
-            "title": "Есть ли штрафы и проценты?",
-            "answer": "Это специальный программный продукт партнерской организации, интегрированный в информационные ресурсы Банка, который используется Заемщиком/клиентом для приобретения товаров онлайн в кредит у партнерской организации и/или торговых точек ее партнеров;"
+            "title": "Diametr.uz  nima va kimlarga kerak?",
+            "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex "
         },
         {
-            "title": "Почему существует возрастное ограничение для клиента?",
-            "answer": "Это специальный программный продукт партнерской организации, интегрированный в информационные ресурсы Банка, который используется Заемщиком/клиентом для приобретения товаров онлайн в кредит у партнерской организации и/или торговых точек ее партнеров;"
+            "title": "Diametr.uz  nima va kimlarga kerak?",
+            "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex "
         },
+        
+       
 
 
     ]
     return (
-        <div id="Questions" className='Questions w-screen px-4 md:px-10 py-20   flex flex-col items-center space-y-1 text-center'>
+        <div id="Questions" className='Questions w-screen px-4 md:px-5 py-20   flex flex-col items-center space-y-1 text-center'>
 
             <span className='text-primary bg-secondary rounded-full px-4 py-2 '>Вопросы</span>
             <p className='font-semibold md:text-[36px] text-[24px] text-textColor max-w-[1200px]'>

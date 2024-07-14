@@ -61,7 +61,7 @@ export default function Writing() {
 
 
     return (
-        <div className='Writing w-screen px-4 md:px-10 py-20 min-h-[500px]  flex flex-col items-center text-center'>
+        <div className='Writing w-screen px-4 md:px-5 py-20 min-h-[500px]  flex flex-col items-center text-center'>
 
 
             <div className="w-full min-h-[372px] bg-secondary rounded-[32px] md:p-[64px] p-[24px] items-start flex flex-col">
