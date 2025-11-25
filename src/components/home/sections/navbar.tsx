@@ -13,17 +13,17 @@ export default function Navbar() {
   const elements = [
     {
       "to": "",
-      "title": "Главная",
+      "title": "Bosh sahifa",
       "id": "Main"
     },
     {
       "to": "",
-      "title": "Функции",
+      "title": "Imkoniyatlar",
       "id": "Customer"
     },
     {
       "to": "",
-      "title": "Вопросы",
+      "title": "Savollar",
       "id": "Questions"
 
 
@@ -37,7 +37,7 @@ export default function Navbar() {
     // },
     {
       "to": "",
-      "title": "Контакт",
+      "title": "Aloqa",
       "id": "Footer"
     }
   ];
@@ -57,7 +57,7 @@ export default function Navbar() {
   const [showMenu, setMenu] = useState(false);
 
   return (
-    <header className='w-full  md:px-5 px-4 py-5 '>
+    <header className='w-full md:px-5 px-4 py-5 bg-white sticky top-0 z-50 shadow-sm'>
       <nav className='flex flex-row justify-between items-center'>
         <img src={logo} alt="Diametr" className='w-[250px] cursor-pointer' />
         <div className='font-semibold flex-row flex items-center'>
@@ -68,7 +68,7 @@ export default function Navbar() {
                 return <span onClick={() => {
                   var element = document.getElementById(el.id);
                   element?.scrollIntoView({ behavior: 'smooth' });
-                }} key={el.title} className='p-3 text-textColor cursor-pointer   hover:text-primary '>{el.title}</span>
+                }} key={el.title} className='p-3 text-textColor cursor-pointer hover:text-primary transition-colors duration-300 font-medium hover:scale-105 transform'>{el.title}</span>
               })
             }
 
@@ -87,13 +87,15 @@ export default function Navbar() {
       </nav>
 
       {
-          showMenu && <div className='lg:hidden fixed flex-col items-start px-4 py-5 bg-white  inset-0 transition-opacity duration-700 ease-in-out z-20'>
+          showMenu && (
+            <>
+              <div className='lg:hidden fixed inset-0 bg-white z-[60] overflow-y-auto'>
 
-              <div className='flex justify-between text-white'>
+              <div className='flex justify-between items-center mb-8 px-6 pt-6'>
               <img src={logo} alt="Diametr" className='w-[180px] cursor-pointer' />
 
-                  <button className='flex flex-row items-center justify-center' onClick={() => setMenu(false)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="#00C48C" className="w-10 h-10">
+                  <button className='flex flex-row items-center justify-center p-2 hover:bg-secondary/30 rounded-xl transition-all' onClick={() => setMenu(false)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="#00C48C" className="w-8 h-8">
   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
 </svg>
 
@@ -101,52 +103,26 @@ export default function Navbar() {
               </div>
 
 
-              <div className='p-6 gap-4 flex flex-col items-start justify-items-start'>
-              <div className='items-start flex-col flex'>
+              <div className='flex flex-col items-stretch justify-start gap-6 w-full px-6 pb-6'>
+              <div className='flex flex-col items-stretch gap-2'>
             {
               elements.map(el => {
                 return <span onClick={() => {
                   setMenu(false)
                   var element = document.getElementById(el.id);
                   element?.scrollIntoView({ behavior: 'smooth' });
-                }} key={el.title} className='p-3 text-textColor cursor-pointer   hover:text-primary '>{el.title}</span>
+                }} key={el.title} className='p-4 text-textColor cursor-pointer hover:bg-secondary/30 hover:text-primary rounded-xl transition-all duration-300 font-medium text-lg border-b border-gray-100'>{el.title}</span>
               })
             }
 
           </div>
 
-          <div className='flex-row flex  items-center gap-2'>
-            {/* <div className="dropdown dropdown-hover "  >
-
-              <div tabIndex={0} role="button" className="btn  bg-primary text-white uppercase flex flex-row items-center h-[62px] py-0 justify-center"><img src={langs.find(l => l.title == t("language"))?.flag} className='rounded-full w-[14px] h-[14px] object-cover object-center' alt="" /> <span>{t("language")}</span></div>
-       
-
-
-               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box" >
-                {
-                  langs.map((e) => {
-
-                    return <li key={`lng-${e.title}`} className="uppercase" onClick={async () => {
-                      toggleMenu((prev) => !prev)
-                      await i18next.changeLanguage(e.title);
-                      localStorage.setItem("I18N_LANGUAGE", e.title);
+          <div className='flex flex-col gap-3 mt-4'>
 
 
 
 
-                    }}>  <a>{e.title}</a></li>
-
-                  })
-                }
-              </ul> 
-
-
-            </div> */}
-
-
-
-
-            <button className="btn bg-primary  text-white  text-md  h-[62px]">Yuklash</button>
+            <button className="btn bg-gradient-to-r from-primary to-primary/80 text-white text-base border-none hover:text-white hover:from-primary/90 hover:to-primary/70 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 min-h-[48px] w-full font-semibold rounded-xl">Yuklash</button>
           </div>
 
                
@@ -155,6 +131,8 @@ export default function Navbar() {
 
 
           </div>
+            </>
+          )
       }
 
     </header>

@@ -76,25 +76,25 @@ export default function Home() {
 
       <Footer />
 
-      <div className='fixed  bottom-[20px] md:bottom-[50px] md:right-[50px] right-[20px]'>
+      <div className='fixed bottom-[20px] md:bottom-[50px] md:right-[50px] right-[20px] z-50'>
         {
           chatStatus == "show" ? <Chatbox /> : (chatStatus == "start" ?
-            <div className="p-3 rounded-[12px] bg-secondary bg-opacity-75 relative" >
-              <div className=' w-full h-full flex items-center cursor-pointer' onClick={() => setChatStatus("show")}>
-                <img className="rounded-full w-10 h-10  "
+            <div className="p-4 rounded-2xl bg-white shadow-xl border-2 border-primary/20 relative hover:shadow-2xl transition-all duration-300 z-50" >
+              <div className=' w-full h-full flex items-center cursor-pointer gap-3' onClick={() => setChatStatus("show")}>
+                <img className="rounded-full w-12 h-12 ring-2 ring-primary/30"
                   src="https://img.freepik.com/premium-vector/robot-icon-bot-sign-design-chatbot-symbol-concept-voice-support-service-bot-online-support-bot-vector-stock-illustration_100456-34.jpg" />
-                <div className="pl-2">
-                  <div className="font-semibold">
-                    <span >Support bot</span>
+                <div>
+                  <div className="font-semibold text-textColor">
+                    <span>Yordam boti</span>
                   </div>
-                  <div className="text-xs text-gray-600">Могу ли я вам чем-то помочь?</div>
+                  <div className="text-xs text-gray-600">Sizga qanday yordam bera olaman?</div>
                 </div>
 
 
 
               </div>
-              <div className='w-6 h-6 rounded-full bg-white  absolute -right-3 -top-3 shadow-xl shadow-black/20 flex flex-row justify-center items-center p-1 cursor-pointer' onClick={() => setChatStatus("close")}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#00C48C" className="w-6 h-6" >
+              <div className='w-8 h-8 rounded-full bg-white border-2 border-primary/30 absolute -right-3 -top-3 shadow-xl shadow-primary/20 flex flex-row justify-center items-center p-1 cursor-pointer hover:bg-primary hover:scale-110 transition-all duration-300 group' onClick={() => setChatStatus("close")}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="#00C48C" className="w-5 h-5 group-hover:stroke-white transition-colors" >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
 
