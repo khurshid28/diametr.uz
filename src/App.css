@@ -2,8 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html{
-  color-scheme: "light";
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
 }
 
 html,body {

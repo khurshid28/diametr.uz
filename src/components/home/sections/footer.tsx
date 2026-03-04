@@ -1,163 +1,155 @@
-import React from 'react'
+﻿import React from 'react'
 import logo from "../../../assets/logo.png"
-import mobileSvg from "../../../assets/mobile.svg"
-import emailSvg from "../../../assets/email.svg"
+import { useLang } from '../../../context/AppContext'
 
+const CATEGORIES = ["Sement", "G'isht", "Temir", "Yog'och", "Qum va shag'al", "Lak va bo'yoq", "Plitka", "Shifer"]
 
 export default function Footer() {
-    const elements = [
-        {
-            "to": "",
-            "title": "Bosh sahifa",
-            "id": "Main"
-        },
-        {
-            "to": "",
-            "title": "Imkoniyatlar",
-            "id": "Customer"
-        },
-        {
-            "to": "",
-            "title": "Savollar",
-            "id": "Questions"
+  const { lang, theme } = useLang()
+  const year = new Date().getFullYear()
+  return (
+    <footer id="Footer" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-white transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <div
+              className="relative flex items-center justify-center overflow-hidden mb-4 flex-shrink-0"
+              style={{
+                width: 56, height: 56,
+                background: 'linear-gradient(140deg, rgba(0,196,140,0.18) 0%, rgba(0,20,12,0.96) 100%)',
+                boxShadow: '0 0 0 1.5px rgba(0,196,140,0.30), 0 0 28px 4px rgba(0,196,140,0.18), 0 8px 24px rgba(0,0,0,0.4)',
+                borderRadius: 16,
+              }}
+            >
+              {/* Corner shine */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, transparent 45%)',
+                borderRadius: 16,
+              }} />
+              {/* Shimmer sweep */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: 'linear-gradient(108deg, transparent 15%, rgba(255,255,255,0.30) 48%, rgba(200,255,240,0.15) 52%, transparent 85%)',
+                animation: 'splashShimmer 2.8s 0.8s ease-in-out infinite',
+                borderRadius: 16,
+                zIndex: 3,
+              }} />
+              <img src={logo} alt="Diametr"
+                style={{ width: 34, height: 34, objectFit: 'contain', filter: 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(0,196,140,0.8))', position: 'relative', zIndex: 4 }}
+              />
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">
+              {lang === "uz"
+                ? "O'zbekistondagi qurilish materiallari uchun yetakchi onlayn platforma"
+                : "Ведущая онлайн-платформа для стройматериалов в Узбекистане"}
+            </p>
+            <div className="flex items-center gap-3">
+              <a href="tel:+998935055444" className="flex items-center gap-2 text-primary hover:text-primary/80 text-sm transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                </svg>
+                +998 93 505 54 44
+              </a>
+            </div>
+          </div>
 
+          {/* Categories */}
+          <div>
+            <h4 className="font-bold text-slate-800 dark:text-white mb-5 text-sm uppercase tracking-wider">
+              {lang === "uz" ? "Kategoriyalar" : "Категории"}
+            </h4>
+            <ul className="flex flex-col gap-2.5">
+              {CATEGORIES.map((cat, i) => (
+                <li key={i}>
+                  <span className="text-slate-500 dark:text-slate-400 hover:text-primary text-sm cursor-pointer transition-colors duration-200">{cat}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        },
-        // {
-        //     "to": "",
-        //     "title": "Команда",
-        //     "id": "Team"
+          {/* Links */}
+          <div>
+            <h4 className="font-bold text-slate-800 dark:text-white mb-5 text-sm uppercase tracking-wider">
+              {lang === "uz" ? "Havolalar" : "Ссылки"}
+            </h4>
+            <ul className="flex flex-col gap-2.5">
+              {[
+                { uz: "Bosh sahifa", ru: "Главная" },
+                { uz: "Katalog", ru: "Каталог" },
+                { uz: "Do'konlar", ru: "Магазины" },
+                { uz: "Biz haqimizda", ru: "О нас" },
+                { uz: "Aloqa", ru: "Контакты" },
+              ].map((item, i) => (
+                <li key={i}>
+                  <span className="text-slate-400 hover:text-primary text-sm cursor-pointer transition-colors duration-200">
+                    {lang === "uz" ? item.uz : item.ru}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        // },
-        {
-            "to": "",
-            "title": "Aloqa",
-            "id": "Footer"
-        }
-    ];
-    return (
-        <div id="Footer" className='Footer w-full px-4 sm:px-6 md:px-8 lg:px-12 pt-12 md:pt-16 lg:pt-20 pb-6 flex flex-col items-center space-y-1 text-center bg-white'>
-
-            <div className='w-full min-h-[228px] flex flex-col md:flex-row md:items-start items-center gap-y-6 md:gap-y-10 mb-6 md:mb-8 justify-between'>
-                <div className='max-w-[420px] flex flex-col md:items-start items-center justify-between gap-y-2'>
-                    <div className='md:items-start gap-2 flex flex-col items-center'>   
-                        <img src={logo} alt="Diametr" className='max-w-[150px] sm:max-w-[187px] cursor-pointer' />
-                        <span className='text-sm md:text-base text-textColor md:text-start text-center'>Biz bilan istalgan xaridingizni oson amalga oshiring </span>
-                    </div>
-                    <div className='flex flex-row items-center justify-start gap-2 md:gap-3 stroke-2'>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='cursor-pointer hover:scale-110 transition-transform min-w-[44px] min-h-[44px] p-2'>
-                            <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#00C48C" />
-                            <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#00C48C" />
-                            <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="#00C48C" />
-                            <path d="M17.25 7.875C17.25 8.49632 16.7463 9 16.125 9C15.5037 9 15 8.49632 15 7.875C15 7.25368 15.5037 6.75 16.125 6.75C16.7463 6.75 17.25 7.25368 17.25 7.875Z" fill="white" />
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 15.75C14.0711 15.75 15.75 14.0711 15.75 12C15.75 9.92893 14.0711 8.25 12 8.25C9.92893 8.25 8.25 9.92893 8.25 12C8.25 14.0711 9.92893 15.75 12 15.75ZM12 14.25C13.2426 14.25 14.25 13.2426 14.25 12C14.25 10.7574 13.2426 9.75 12 9.75C10.7574 9.75 9.75 10.7574 9.75 12C9.75 13.2426 10.7574 14.25 12 14.25Z" fill="white" />
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 11.7C4.5 9.17976 4.5 7.91965 4.99047 6.95704C5.4219 6.11031 6.11031 5.4219 6.95704 4.99047C7.91965 4.5 9.17976 4.5 11.7 4.5H12.3C14.8202 4.5 16.0804 4.5 17.043 4.99047C17.8897 5.4219 18.5781 6.11031 19.0095 6.95704C19.5 7.91965 19.5 9.17976 19.5 11.7V12.3C19.5 14.8202 19.5 16.0804 19.0095 17.043C18.5781 17.8897 17.8897 18.5781 17.043 19.0095C16.0804 19.5 14.8202 19.5 12.3 19.5H11.7C9.17976 19.5 7.91965 19.5 6.95704 19.0095C6.11031 18.5781 5.4219 17.8897 4.99047 17.043C4.5 16.0804 4.5 14.8202 4.5 12.3V11.7ZM11.7 6H12.3C13.5849 6 14.4583 6.00117 15.1334 6.05633C15.7911 6.11006 16.1274 6.20745 16.362 6.32698C16.9265 6.6146 17.3854 7.07354 17.673 7.63803C17.7926 7.87263 17.8899 8.20893 17.9437 8.86656C17.9988 9.54169 18 10.4151 18 11.7V12.3C18 13.5849 17.9988 14.4583 17.9437 15.1334C17.8899 15.7911 17.7926 16.1274 17.673 16.362C17.3854 16.9265 16.9265 17.3854 16.362 17.673C16.1274 17.7926 15.7911 17.8899 15.1334 17.9437C14.4583 17.9988 13.5849 18 12.3 18H11.7C10.4151 18 9.54169 17.9988 8.86656 17.9437C8.20893 17.8899 7.87263 17.7926 7.63803 17.673C7.07354 17.3854 6.6146 16.9265 6.32698 16.362C6.20745 16.1274 6.11006 15.7911 6.05633 15.1334C6.00117 14.4583 6 13.5849 6 12.3V11.7C6 10.4151 6.00117 9.54169 6.05633 8.86656C6.11006 8.20893 6.20745 7.87263 6.32698 7.63803C6.6146 7.07354 7.07354 6.6146 7.63803 6.32698C7.87263 6.20745 8.20893 6.11006 8.86656 6.05633C9.54169 6.00117 10.4151 6 11.7 6Z" fill="white" />
-                        </svg>
-
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='cursor-pointer hover:scale-110 transition-transform min-w-[44px] min-h-[44px] p-2'>
-                            <circle cx="12" cy="12" r="10.5" fill="#00C48C" />
-                            <path d="M15.9103 15.2112L16.3767 12.2476H13.4589V10.3252C13.4589 9.51428 13.8657 8.7233 15.1726 8.7233H16.5V6.20024C16.5 6.20024 15.2959 6 14.1452 6C11.7411 6 10.1712 7.4197 10.1712 9.98883V12.2476H7.5V15.2112H10.1712V22.3759C10.7075 22.458 11.2562 22.5 11.8151 22.5C12.374 22.5 12.9226 22.458 13.4589 22.3759V15.2112H15.9103Z" fill="white" />
-                        </svg>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='cursor-pointer hover:scale-110 transition-transform min-w-[44px] min-h-[44px] p-2'>
-                            <path d="M8.84156 21C6.41531 21 4.15363 20.2943 2.25 19.0767C3.86624 19.1813 6.71855 18.9308 8.49268 17.2386C5.82381 17.1161 4.6202 15.0692 4.4632 14.1945C4.68997 14.2819 5.77148 14.3869 6.382 14.142C3.31192 13.3722 2.84095 10.678 2.94561 9.85573C3.52125 10.2581 4.49809 10.3981 4.88185 10.3631C2.02109 8.31618 3.05027 5.23707 3.55613 4.57226C5.60912 7.4165 8.6859 9.01393 12.4923 9.10278C12.4205 8.78802 12.3826 8.46032 12.3826 8.12373C12.3826 5.70819 14.3351 3.75 16.7435 3.75C18.0019 3.75 19.1358 4.28457 19.9318 5.13963C20.7727 4.94258 22.0382 4.4813 22.6569 4.0824C22.3451 5.20208 21.3742 6.13612 20.7869 6.48231C20.7821 6.47048 20.7918 6.49408 20.7869 6.48231C21.3028 6.40428 22.6986 6.13603 23.25 5.76192C22.9773 6.39094 21.948 7.4368 21.1033 8.02232C21.2605 14.9535 15.9574 21 8.84156 21Z" fill="#00C48C" />
-                        </svg>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='cursor-pointer hover:scale-110 transition-transform min-w-[44px] min-h-[44px] p-2'>
-                            <rect x="1.5" y="1.5" width="21" height="21" rx="10.5" fill="#00C48C" />
-                            <path d="M9.46392 7.26911C9.46392 7.97002 8.85639 8.53822 8.10696 8.53822C7.35753 8.53822 6.75 7.97002 6.75 7.26911C6.75 6.5682 7.35753 6 8.10696 6C8.85639 6 9.46392 6.5682 9.46392 7.26911Z" fill="white" />
-                            <path d="M6.93557 9.47107H9.25515V16.5H6.93557V9.47107Z" fill="white" />
-                            <path d="M12.9897 9.47107H10.6701V16.5H12.9897C12.9897 16.5 12.9897 14.2872 12.9897 12.9036C12.9897 12.0732 13.2732 11.2392 14.4046 11.2392C15.6833 11.2392 15.6756 12.3259 15.6696 13.1678C15.6618 14.2683 15.6804 15.3914 15.6804 16.5H18V12.7903C17.9804 10.4215 17.3631 9.33006 15.3325 9.33006C14.1265 9.33006 13.379 9.87754 12.9897 10.3729V9.47107Z" fill="white" />
-                        </svg>
-
-
-
-
-
-
-
-                    </div>
-                </div>
-
-
-                <div className='w-full md:w-auto md:max-w-[150px] md:min-h-[228px] px-4 md:px-5 md:items-start items-center flex flex-col gap-3 md:gap-4'>
-
-                    <span className='font-semibold text-base md:text-lg text-black'>Kompaniya</span>
-                    {
-                        elements.map((e) => {
-                            return <span key={e.id} onClick={() => {
-                                var element = document.getElementById(e.id);
-                                element?.scrollIntoView({ behavior: 'smooth' });
-                            }} className='font-medium text-sm md:text-base text-textColor cursor-pointer hover:text-primary transition-colors min-h-[44px] flex items-center'>{e.title}</span>
-                        })
-                    }
-                </div>
-                <div className='w-full md:w-auto md:max-w-[240px] md:min-h-[228px] px-4 md:px-5 md:items-start items-center flex flex-col gap-3 md:gap-4'>
-
-                    <span className='font-semibold text-base md:text-lg text-black'>Qo'llab-quvvatlash</span>
-                    <span className='font-medium text-sm md:text-base text-textColor cursor-pointer hover:text-primary transition-colors min-h-[44px] flex items-center'>Yordam markazi</span>
-                </div>
-                <div className='w-full md:w-auto md:max-w-[320px] md:min-h-[228px] px-4 md:px-5 items-center flex flex-col gap-3 md:gap-4'>
-
-                    <span className='font-semibold text-base md:text-lg text-black'>Biz bilan bog'laning</span>
-                    <div className='flex flex-col items-start gap-2'>
-                        <div className='flex flex-row items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity min-h-[44px]'>
-
-
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#667085" className='flex-shrink-0'>
-                                <path d="M3.33333 5.83329L8.49999 9.70829C9.38889 10.375 10.6111 10.375 11.5 9.70828L16.6667 5.83325M4.16667 15.8333H15.8333C16.7538 15.8333 17.5 15.0871 17.5 14.1666V5.83329C17.5 4.91282 16.7538 4.16663 15.8333 4.16663H4.16667C3.24619 4.16663 2.5 4.91282 2.5 5.83329V14.1666C2.5 15.0871 3.24619 15.8333 4.16667 15.8333Z" stroke="#97A1AF" stroke-width="1.5" stroke-linecap="round" />
-                            </svg>
-
-
-                            <span className='font-medium text-sm md:text-base text-textColor tracking-normal'>alpdiametr@gmail.com</span>
-                        </div>
-
-
-                        <div className='flex flex-row items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity min-h-[44px]'>
-
-
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#667085" className='flex-shrink-0'>
-                                <path d="M10.7026 15.1307C12.0871 15.8275 13.7097 16.3358 15.6047 16.5679C16.1781 16.6382 16.6667 16.1777 16.6667 15.6001V14.1141C16.6667 13.6553 16.3544 13.2553 15.9092 13.144L13.8826 12.6374C13.5418 12.5522 13.1814 12.652 12.933 12.9004L10.7026 15.1307ZM10.7026 15.1307C8.10624 13.824 6.34755 11.8542 5.20097 9.79907M5.20097 9.79907C4.14691 7.90974 3.61018 5.94831 3.41555 4.36365C3.34663 3.80252 3.80188 3.33337 4.36722 3.33337H5.84687C6.32355 3.33337 6.73396 3.66983 6.82745 4.13726L7.39504 6.97525C7.46062 7.30311 7.35799 7.64205 7.12157 7.87847L5.20097 9.79907Z" stroke="#97A1AF" stroke-width="1.5" />
-                            </svg>
-
-
-                            <span className='font-medium text-[16px] text-textColor tracking-normal'>+99899 0099955</span>
-                        </div>
-
-                        <div className='flex flex-row items-center gap-2 cursor-pointer text-left'>
-
-
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#667085" className='scale-125' >
-                                <path d="M12.5 8.33333C12.5 9.71404 11.3807 10.8333 10 10.8333C8.61929 10.8333 7.5 9.71404 7.5 8.33333C7.5 6.95262 8.61929 5.83333 10 5.83333C11.3807 5.83333 12.5 6.95262 12.5 8.33333Z" stroke="#97A1AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M15.8333 8.125C15.8333 12.8125 10 17.5 10 17.5C10 17.5 4.16666 12.8125 4.16666 8.125C4.16666 5.0184 6.77834 2.5 10 2.5C13.2217 2.5 15.8333 5.0184 15.8333 8.125Z" stroke="#97A1AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-
-
-
-                            <span className='font-medium text-sm md:text-base text-textColor tracking-normal'>Toshkent shahar , shayxontoxur tumani nurafshon kochasi 1 uy</span>
-                        </div>
-                    </div>
-
-                </div>
-
-
+          {/* Contact */}
+          <div>
+            <h4 className="font-bold text-slate-800 dark:text-white mb-5 text-sm uppercase tracking-wider">
+              {lang === "uz" ? "Bog'lanish" : "Связь"}
+            </h4>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                <span className="text-slate-500 dark:text-slate-400 text-sm">{lang === "uz" ? "Toshkent, O'zbekiston" : "Ташкент, Узбекистан"}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 flex-shrink-0 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+                <a href="mailto:info@diametr.uz" className="text-slate-500 dark:text-slate-400 hover:text-primary text-sm transition-colors">info@diametr.uz</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 flex-shrink-0 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                </svg>
+                <a href="https://diametr.uz" className="text-slate-500 dark:text-slate-400 hover:text-primary text-sm transition-colors">diametr.uz</a>
+              </div>
             </div>
 
-
-
-
-
-            <div className="divider text-textGrey "></div>
-            <div className='w-full py-6 md:py-8 flex flex-col md:flex-row justify-center md:justify-between items-center gap-4'>
-                <span className='text-sm md:text-base text-black text-center md:text-left'>
-                    © 2024 Diametr.uz - Barcha huquqlar himoyalangan
-                </span>
-                <div className='text-sm md:text-base text-primary flex flex-row gap-2 items-center flex-wrap justify-center'>
-                    <span className='cursor-pointer hover:underline min-h-[44px] flex items-center'>Xizmat shartlari</span>
-                    <div className="h-[16px] rounded-full w-[1px] bg-textGrey "></div> 
-                    <span className='cursor-pointer hover:underline min-h-[44px] flex items-center'>Maxfiylik siyosati</span>
-                </div>
-
+            {/* Social */}
+            <div className="flex items-center gap-3 mt-5">
+              <a href="https://t.me/diametr_uz" target="_blank" rel="noopener noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-primary dark:hover:bg-primary flex items-center justify-center transition-colors duration-200 group">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-slate-700 dark:text-white group-hover:text-white">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+              </a>
+              <a href="https://instagram.com/diametr_uz" target="_blank" rel="noopener noreferrer"
+                className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-primary dark:hover:bg-primary flex items-center justify-center transition-colors duration-200 group">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-slate-700 dark:text-white group-hover:text-white">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                </svg>
+              </a>
             </div>
+          </div>
+
         </div>
-    )
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-slate-500 dark:text-slate-500 text-xs">
+            &copy; {year} Diametr. {lang === "uz" ? "Barcha huquqlar himoyalangan." : "Все права защищены."}
+          </p>
+          <div className="flex items-center gap-4">
+            <a href="/diametr-mobile.privacy-policy.md" className="text-slate-500 dark:text-slate-500 hover:text-primary text-xs transition-colors">Privacy Policy</a>
+            <span className="text-slate-400 dark:text-slate-700">|</span>
+            <a href="/diametr-admin.privacy-policy.md" className="text-slate-500 dark:text-slate-500 hover:text-primary text-xs transition-colors">Admin Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
 }

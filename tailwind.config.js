@@ -7,12 +7,13 @@ module.exports = {
     extend: {
       colors: {
         primary: "#00C48C",
-        secondary: "rgba(0, 196, 140, 0.12)",
-        textColor: "#1A202C",
-        textGrey: "#718096",
-        primary_gr: "rgba(0, 196, 140, 0.75)",
-        accent: "#00E6A1", // Och yashil accent
-        dark: "#0F172A", // To'q matn uchun
+        "primary-light": "#33D3A3",
+        secondary: "#D1FAF0",
+        textColor: "#0F172A",
+        textGrey: "#64748B",
+        accent: "#00A876",
+        dark: "#0F172A",
+        light: "#F8FAFC",
       },
       fontFamily: {
         sans: ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
@@ -20,6 +21,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui")],
-  darkMode: "false",
+  plugins: [],
+  darkMode: "class",
 };
