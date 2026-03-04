@@ -126,6 +126,7 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
   const [menuOpen, setMenuOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [ordersOpen, setOrdersOpen] = useState(false)
+  const [logoutConfirm, setLogoutConfirm] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -275,7 +276,7 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
                     {lang === 'uz' ? 'Buyurtmalarim' : 'Мои заказы'}
                   </button>
                   <button
-                    onClick={() => { onLogout?.(); setProfileOpen(false) }}
+                    onClick={() => { setLogoutConfirm(true); setProfileOpen(false) }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -310,6 +311,7 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
       {/* Mobile menu overlay */}
       <div
         className={`lg:hidden fixed inset-0 z-[60] transition-all duration-300 ${menuOpen ? "visible" : "invisible"}`}
+        style={{ height: '100dvh' }}
       >
         {/* Backdrop */}
         <div
@@ -319,7 +321,8 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
 
         {/* Drawer */}
         <div
-          className={`absolute top-0 right-0 h-full w-full sm:w-80 bg-white dark:bg-slate-900 shadow-2xl flex flex-col overflow-hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`absolute top-0 right-0 w-full sm:w-80 bg-white dark:bg-slate-900 shadow-2xl flex flex-col overflow-hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+          style={{ height: '100dvh' }}
         >
           <div className="flex justify-between items-center px-5 pt-3 pb-3 border-b border-primary/20 dark:border-primary/10">
             {/* Logo card — same as navbar */}
@@ -344,16 +347,18 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
           </div>
 
           {/* Nav links — scrollable middle */}
-          <div className="flex-1 overflow-y-auto px-4 pt-2 pb-1 flex flex-col gap-0.5 bg-white dark:bg-slate-900">
+          <div className="overflow-y-auto px-4 pt-2 pb-1 bg-white dark:bg-slate-900">
+            <div className="grid grid-cols-2 gap-1">
             {NAV_LINKS.map(link => (
               <button
                 key={link.id}
                 onClick={() => scrollTo(link.id)}
-                className="text-left px-4 py-2.5 text-slate-700 dark:text-slate-200 font-medium hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl text-sm transition-all"
+                className="text-left px-3 py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-xl text-sm transition-all"
               >
                 {lang === "uz" ? link.title : link.titleRu}
               </button>
             ))}
+            </div>
           </div>
 
           {/* Bottom panel — always pinned at bottom */}
@@ -421,7 +426,7 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
                   {lang === 'uz' ? 'Buyurtmalar' : 'Заказы'}
                 </button>
                 <button
-                  onClick={() => { onLogout?.(); setMenuOpen(false) }}
+                  onClick={() => { setLogoutConfirm(true); setMenuOpen(false) }}
                   className="text-xs text-red-400 hover:text-red-600 font-semibold px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex-shrink-0"
                 >
                   {lang === 'uz' ? 'Chiqish' : 'Выйти'}
@@ -444,6 +449,45 @@ export default function Navbar({ onAuthClick, user, onLogout, onCartClick }: {
     </header>
 
     <OrdersDrawer open={ordersOpen} onClose={() => setOrdersOpen(false)} />
+
+    {/* Logout confirmation modal */}
+    {logoutConfirm && (
+      <div className="fixed inset-0 z-[400] flex items-center justify-center px-4" onClick={() => setLogoutConfirm(false)}>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        <div
+          className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-xs flex flex-col gap-4"
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="flex flex-col items-center gap-2 text-center">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-red-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-slate-800 dark:text-white text-base">
+              {lang === 'uz' ? 'Chiqishni tasdiqlang' : 'Подтвердите выход'}
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {lang === 'uz' ? 'Rostdan ham chiqmoqchimisiz?' : 'Вы действительно хотите выйти?'}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setLogoutConfirm(false)}
+              className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              {lang === 'uz' ? 'Bekor' : 'Отмена'}
+            </button>
+            <button
+              onClick={() => { onLogout?.(); setLogoutConfirm(false) }}
+              className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold text-sm transition-colors"
+            >
+              {lang === 'uz' ? 'Ha, chiqish' : 'Да, выйти'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </>
   )
 }
