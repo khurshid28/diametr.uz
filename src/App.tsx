@@ -59,7 +59,7 @@ function App() {
         hideProgressBar
         newestOnTop
         closeOnClick
-        pauseOnHover
+        pauseOnHover={false}
         closeButton={false}
       />
     </AppProvider>

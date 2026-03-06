@@ -195,7 +195,7 @@ export default function CategoryPage() {
           <p className="text-[11px] text-[#00C48C] font-semibold truncate">{shopName} · {sp.price!.toLocaleString()} {lang === 'uz' ? "so'm" : 'сум'}</p>
         </div>
       </div>,
-      { icon: false }
+      { icon: false, autoClose: 2500, pauseOnHover: false }
     )
   }, [selected, addItem, lang])
 
