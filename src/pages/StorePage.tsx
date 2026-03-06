@@ -334,7 +334,6 @@ export default function StorePage() {
             userCoords={userCoords}
             hasFilter={hasFilter}
             resetAll={resetAll}
-            searchActive={!!search.trim()}
           />
         </div>
       </div>

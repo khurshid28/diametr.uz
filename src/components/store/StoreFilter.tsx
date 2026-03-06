@@ -19,7 +19,6 @@ interface StoreFilterProps {
   userCoords: { lat: number; lon: number } | null
   hasFilter: boolean
   resetAll: () => void
-  searchActive?: boolean // true when searching (for showing price filter)
 }
 
 const XIcon = () => (
@@ -80,9 +79,8 @@ export default function StoreFilter({
   userCoords,
   hasFilter,
   resetAll,
-  searchActive,
 }: StoreFilterProps) {
-  const showPrice = tab === 'categories' && searchActive
+  const showPrice = tab === 'categories'
   const showKm = tab === 'shops'
 
   return (
@@ -182,17 +180,6 @@ export default function StoreFilter({
             </button>
           )}
         </div>
-      )}
-
-      {/* Reset when only region selected (no numeric row) */}
-      {!showPrice && !showKm && hasFilter && (
-        <button
-          onClick={resetAll}
-          className="flex items-center gap-1 h-7 px-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-400 hover:text-red-600 text-xs font-semibold transition-all"
-        >
-          <XIcon />
-          {lang === 'ru' ? 'Сбросить' : 'Tozalash'}
-        </button>
       )}
     </div>
   )
