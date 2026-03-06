@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/home/sections/navbar'
 import AuthModal from '../components/auth/AuthModal'
 import CartDrawer from '../components/cart/CartDrawer'
+import SplashScreen from '../components/common/SplashScreen'
 import { useLang } from '../context/AppContext'
 import { authService, AuthUser } from '../service/authService'
+
+const SPLASH_KEY = 'diametr_splash'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8888'
 const API_URL = `${BASE_URL}/api/v1`
@@ -24,6 +27,8 @@ interface Shop {
   name?: string
   image?: string
   address?: string
+  lat?: number
+  lon?: number
   region?: { id?: number; name?: string }
   delivery_amount?: number
   yandex_delivery?: boolean
@@ -39,6 +44,22 @@ function formatCount(n: number) {
   return `${n}+`
 }
 
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371
+  const toRad = (v: number) => (v * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function formatKm(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)} m`
+  return `${km % 1 === 0 ? km.toFixed(0) : km.toFixed(1)} km`
+}
+
 const SKELETONS = Array.from({ length: 8 })
 
 // ── Main Component ─────────────────────────────────────────────────────────────
@@ -48,8 +69,25 @@ export default function StorePage() {
 
   const [tab, setTab] = useState<'categories' | 'shops'>('categories')
   const [user, setUser] = useState<AuthUser | null>(() => authService.getUser())
+  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null)
+
+  useEffect(() => {
+    if (!navigator?.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      () => {},
+      { timeout: 8000, maximumAge: 300_000, enableHighAccuracy: false },
+    )
+  }, [])
   const [authOpen, setAuthOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+  // Show splash only once per session (skip if already shown via Home)
+  const [splashDone, setSplashDone] = useState(() => !!sessionStorage.getItem(SPLASH_KEY))
+
+  const handleSplashDone = useCallback(() => {
+    sessionStorage.setItem(SPLASH_KEY, '1')
+    setSplashDone(true)
+  }, [])
 
   // ── categories state ──
   const [categories, setCategories] = useState<Category[]>([])
@@ -138,6 +176,7 @@ export default function StorePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900 transition-colors duration-300">
+      {!splashDone && <SplashScreen onDone={handleSplashDone} />}
       {/* Navbar */}
       <Navbar
         user={user}
@@ -322,6 +361,15 @@ export default function StorePage() {
                       )}
                       {shop.address && (
                         <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-1">{shop.address}</p>
+                      )}
+                      {userCoords && shop.lat && shop.lon && (
+                        <p className="text-xs font-bold text-primary flex items-center gap-1 mt-0.5">
+                          <svg className="w-3 h-3 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                          </svg>
+                          {formatKm(haversineKm(userCoords.lat, userCoords.lon, shop.lat, shop.lon))} {lang === 'ru' ? 'от вас' : 'sizdan'}
+                        </p>
                       )}
                       {/* Delivery badges */}
                       <div className="flex gap-1.5 mt-2 flex-wrap">

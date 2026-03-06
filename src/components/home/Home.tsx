@@ -1,5 +1,5 @@
 ﻿import React, { useState, useCallback, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Navbar from "./sections/navbar"
 import Main from "./sections/main"
 import CategoryGrid from "./sections/categoryGrid"
@@ -25,9 +25,10 @@ export default function Home() {
   const [authOpen, setAuthOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const geo = useGeoPermission()
-  const [splashDone, setSplashDone] = useState(false)
+  const [splashDone, setSplashDone] = useState(() => !!sessionStorage.getItem('diametr_splash'))
 
   const handleSplashDone = useCallback(() => {
+    sessionStorage.setItem('diametr_splash', '1')
     navigate('/store')
   }, [navigate])
 
@@ -58,6 +59,9 @@ export default function Home() {
     window.addEventListener('diametr:unauthorized', onUnauthorized)
     return () => window.removeEventListener('diametr:unauthorized', onUnauthorized)
   }, [])
+
+  // If splash already played this session, skip straight to store
+  if (splashDone) return <Navigate to="/store" replace />
 
   return (
     <div className={`Home w-screen relative flex flex-col overflow-x-hidden bg-white dark:bg-slate-900 transition-colors duration-300`}>
