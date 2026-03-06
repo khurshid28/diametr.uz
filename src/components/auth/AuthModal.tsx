@@ -161,11 +161,11 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden animate-slideUp">
+      <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden animate-slideUp mx-2 sm:mx-0">
         {/* Green top accent */}
         <div className="h-1.5 w-full bg-gradient-to-r from-primary via-emerald-400 to-teal-500" />
 
-        <div className="p-7">
+        <div className="p-4 sm:p-7">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
           {step === 'phone' && (
             <div>
               <div className="relative">
-                <div className="flex items-center gap-2 px-4 py-3.5 rounded-2xl border-2 border-slate-200 focus-within:border-primary transition-colors bg-slate-50">
+                <div className="flex items-center gap-1.5 px-3 py-3 rounded-2xl border-2 border-slate-200 focus-within:border-primary transition-colors bg-slate-50">
                   {/* UZ prefix */}
                   <div className="flex items-center gap-1.5 shrink-0 border-r border-slate-200 pr-3 mr-1">
                     <svg width="22" height="15" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg" style={{ borderRadius: 2 }}>
