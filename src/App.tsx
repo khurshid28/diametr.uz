@@ -21,9 +21,8 @@ function ScrollToTop() {
 }
 
 function SplashWrapper({ children }: { children: React.ReactNode }) {
-  const [done, setDone] = useState(() => !!sessionStorage.getItem('diametr_splash'))
+  const [done, setDone] = useState(false)
   const handleDone = useCallback(() => {
-    sessionStorage.setItem('diametr_splash', '1')
     setDone(true)
   }, [])
   return (
