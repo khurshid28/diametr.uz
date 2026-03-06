@@ -50,6 +50,8 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
     useRef<HTMLInputElement>(null),
   ]
   const [codeDigits, setCodeDigits] = useState(['', '', '', '', '', ''])
+  // Guard against double-submit (React 18 batching can call handleVerify twice)
+  const verifyingRef = React.useRef(false)
 
   // Focus phone input on open
   useEffect(() => {
@@ -59,6 +61,7 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
       setCode('')
       setError('')
       setCodeDigits(['', '', '', '', '', ''])
+      verifyingRef.current = false
       setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [open])
@@ -135,6 +138,9 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
     const c = fullCode ?? codeDigits.join('')
     setError('')
     if (c.length !== 6) return
+    // Prevent double-call (auto-fill + button click race)
+    if (verifyingRef.current) return
+    verifyingRef.current = true
     setLoading(true)
     try {
       const res = await authService.verifySms(verifyId, c)
@@ -142,6 +148,7 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
       onAuth()
       onClose()
     } catch (e) {
+      verifyingRef.current = false
       setError((e as any).message || "Kod noto'g'ri")
       setCodeDigits(['', '', '', '', '', ''])
       setTimeout(() => codeRefs[0].current?.focus(), 50)
@@ -168,15 +175,15 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
         <div className="p-4 sm:p-7">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="shrink-0 w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                 <PhoneIcon />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-xl font-bold text-slate-900">
                   {step === 'phone' ? L.title[lang] : L.smsTitle[lang]}
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5 truncate">
                   {step === 'phone'
                     ? L.subtitle[lang]
                     : `${fullPhone} ${L.smsDesc[lang]}`}
@@ -185,7 +192,7 @@ export default function AuthModal({ open, onClose, onAuth, lang = 'uz' }: Props)
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+              className="shrink-0 ml-2 w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
