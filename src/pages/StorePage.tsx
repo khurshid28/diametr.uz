@@ -272,10 +272,35 @@ export default function StorePage() {
       />
       <div className="h-[76px] flex-shrink-0" />
 
-      {/* Tab Bar + Search */}
+      {/* Sticky header */}
       <div className="sticky top-[76px] z-30 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-3">
+
+          {/* Row 1 — Region chips (above tabs) */}
+          {regions.length > 0 && (
+            <div className="flex items-center gap-1.5 overflow-x-auto pt-2 pb-2" style={{ scrollbarWidth: 'none' }}>
+              <button
+                onClick={() => setFilterRegion('')}
+                className={`flex-shrink-0 h-7 px-3 rounded-full text-xs font-semibold transition-all ${
+                  !filterRegion ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
+                }`}
+              >
+                {lang === 'ru' ? 'Все' : 'Barchasi'}
+              </button>
+              {regions.map(r => (
+                <button
+                  key={r}
+                  onClick={() => setFilterRegion(filterRegion === r ? '' : r)}
+                  className={`flex-shrink-0 h-7 px-3 rounded-full text-xs font-semibold transition-all ${
+                    filterRegion === r ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
+                  }`}
+                >{r}</button>
+              ))}
+            </div>
+          )}
+
+          {/* Row 2 — Tabs + Search */}
+          <div className="flex items-center gap-3 border-t border-slate-100 dark:border-slate-800">
             {(['categories', 'shops'] as const).map(t => (
               <button
                 key={t}
@@ -316,25 +341,24 @@ export default function StorePage() {
             </div>
           </div>
 
-          {/* Filter */}
-          <StoreFilter
-            tab={tab}
-            lang={lang}
-            regions={regions}
-            filterRegion={filterRegion}
-            setFilterRegion={setFilterRegion}
-            filterMinPrice={filterMinPrice}
-            filterMaxPrice={filterMaxPrice}
-            setFilterMinPrice={setFilterMinPrice}
-            setFilterMaxPrice={setFilterMaxPrice}
-            filterMinKm={filterMinKm}
-            filterMaxKm={filterMaxKm}
-            setFilterMinKm={setFilterMinKm}
-            setFilterMaxKm={setFilterMaxKm}
-            userCoords={userCoords}
-            hasFilter={hasFilter}
-            resetAll={resetAll}
-          />
+          {/* Row 3 — Numeric filters */}
+          <div className="border-t border-slate-100 dark:border-slate-800">
+            <StoreFilter
+              tab={tab}
+              lang={lang}
+              filterMinPrice={filterMinPrice}
+              filterMaxPrice={filterMaxPrice}
+              setFilterMinPrice={setFilterMinPrice}
+              setFilterMaxPrice={setFilterMaxPrice}
+              filterMinKm={filterMinKm}
+              filterMaxKm={filterMaxKm}
+              setFilterMinKm={setFilterMinKm}
+              setFilterMaxKm={setFilterMaxKm}
+              userCoords={userCoords}
+              hasFilter={hasFilter}
+              resetAll={resetAll}
+            />
+          </div>
         </div>
       </div>
 
