@@ -32,6 +32,14 @@ interface Shop {
   market_delivery?: boolean
 }
 
+interface Product {
+  id: number
+  name?: string
+  name_uz?: string
+  name_ru?: string
+  category?: { id: number }
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatCount(n: number) {
   if (n <= 0) return ''
@@ -81,6 +89,7 @@ export default function StorePage() {
 
   // ── categories state ──
   const [categories, setCategories] = useState<Category[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const [productCounts, setProductCounts] = useState<Record<number, number>>({})
   const [catsLoading, setCatsLoading] = useState(true)
 
@@ -125,6 +134,7 @@ export default function StorePage() {
           if (p.category?.id) counts[p.category.id] = (counts[p.category.id] || 0) + 1
         })
         setCategories(cats)
+        setProducts(prods as Product[])
         setProductCounts(counts)
       })
       .catch(() => setCategories([]))
@@ -164,12 +174,23 @@ export default function StorePage() {
   const filteredCategories = useMemo(() => {
     if (!search.trim()) return categories
     const q = search.toLowerCase()
-    return categories.filter(c =>
-      (c.name_uz || '').toLowerCase().includes(q) ||
-      (c.name_ru || '').toLowerCase().includes(q) ||
-      (c.name || '').toLowerCase().includes(q)
-    )
-  }, [categories, search])
+    return categories.filter(c => {
+      if (
+        (c.name_uz || '').toLowerCase().includes(q) ||
+        (c.name_ru || '').toLowerCase().includes(q) ||
+        (c.name || '').toLowerCase().includes(q)
+      ) return true
+      return products.some(
+        p =>
+          p.category?.id === c.id &&
+          (
+            (p.name_uz || '').toLowerCase().includes(q) ||
+            (p.name_ru || '').toLowerCase().includes(q) ||
+            (p.name || '').toLowerCase().includes(q)
+          )
+      )
+    })
+  }, [categories, products, search])
 
   const handleAuth = useCallback(() => setUser(authService.getUser()), [])
   const handleLogout = useCallback(() => { authService.logout(); setUser(null) }, [])
