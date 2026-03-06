@@ -6,6 +6,7 @@ import AuthModal from '../components/auth/AuthModal'
 import CartDrawer from '../components/cart/CartDrawer'
 import { useLang } from '../context/AppContext'
 import { authService, AuthUser } from '../service/authService'
+import StoreFilter from '../components/store/StoreFilter'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8888'
 const API_URL = `${BASE_URL}/api/v1`
@@ -182,7 +183,6 @@ export default function StorePage() {
   }, [shops])
 
   // Price/km mask helpers
-  const fmtNum = (v: string) => { const r = v.replace(/\D/g, ''); return r ? r.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '' }
   const parseNum = (v: string) => Number(v.replace(/\./g, '')) || 0
 
   const filteredShops = useMemo(() => {
@@ -258,18 +258,8 @@ export default function StorePage() {
   const handleAuth = useCallback(() => setUser(authService.getUser()), [])
   const handleLogout = useCallback(() => { authService.logout(); setUser(null) }, [])
 
-  const hasFilter = filterRegion || filterMinKm || filterMaxKm || filterMinPrice || filterMaxPrice
+  const hasFilter = !!(filterRegion || filterMinKm || filterMaxKm || filterMinPrice || filterMaxPrice)
   const resetAll = () => { setFilterRegion(''); setFilterMinKm(''); setFilterMaxKm(''); setFilterMinPrice(''); setFilterMaxPrice('') }
-
-  // Compact number input
-  const NumInput = ({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) => (
-    <div className="relative">
-      <input type="text" inputMode="numeric" value={value} onChange={e => onChange(fmtNum(e.target.value))}
-        placeholder={placeholder}
-        className="w-20 pl-2 pr-6 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder-slate-400 text-xs font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" />
-      {value && (<button onClick={() => onChange('')} className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-400"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3"><path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" /></svg></button>)}
-    </div>
-  )
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900 transition-colors duration-300">
@@ -326,61 +316,26 @@ export default function StorePage() {
             </div>
           </div>
 
-          {/* Compact filter row */}
-          <div className="pb-2 pt-1">
-            {/* Region chips */}
-            {regions.length > 0 && (
-              <div className="flex items-center gap-1.5 overflow-x-auto mb-1.5" style={{ scrollbarWidth: 'none' }}>
-                <button
-                  onClick={() => setFilterRegion('')}
-                  className={`flex-shrink-0 h-7 px-3 rounded-full text-xs font-semibold transition-all ${
-                    !filterRegion ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
-                  }`}
-                >
-                  {lang === 'ru' ? 'Все' : 'Barchasi'}
-                </button>
-                {regions.map(r => (
-                  <button
-                    key={r}
-                    onClick={() => setFilterRegion(filterRegion === r ? '' : r)}
-                    className={`flex-shrink-0 h-7 px-3 rounded-full text-xs font-semibold transition-all ${
-                      filterRegion === r ? 'bg-primary text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
-                    }`}
-                  >{r}</button>
-                ))}
-              </div>
-            )}
-
-            {/* Numeric filters — shops: km range; categories+search: price range */}
-            {(tab === 'shops' || (tab === 'categories' && search.trim())) && (
-              <div className="flex items-center gap-2 flex-wrap">
-                {tab === 'shops' && (
-                  <>
-                    <NumInput value={filterMinKm} onChange={setFilterMinKm} placeholder="Min km" />
-                    <span className="text-slate-300 text-xs">—</span>
-                    <NumInput value={filterMaxKm} onChange={setFilterMaxKm} placeholder="Max km" />
-                    <span className="text-xs text-slate-400">km</span>
-                    {!userCoords && (filterMinKm || filterMaxKm) && (
-                      <span className="text-[10px] text-amber-400">{lang === 'ru' ? '(нужна геолокация)' : '(joylashuv kerak)'}</span>
-                    )}
-                  </>
-                )}
-                {tab === 'categories' && search.trim() && (
-                  <>
-                    <NumInput value={filterMinPrice} onChange={setFilterMinPrice} placeholder="Min" />
-                    <span className="text-slate-300 text-xs">—</span>
-                    <NumInput value={filterMaxPrice} onChange={setFilterMaxPrice} placeholder="Max" />
-                    <span className="text-xs text-slate-400">{lang === 'ru' ? 'сум' : "so'm"}</span>
-                  </>
-                )}
-                {hasFilter && (
-                  <button onClick={resetAll} className="text-xs text-red-400 hover:text-red-600 font-semibold ml-1">
-                    {lang === 'ru' ? 'Сбросить' : 'Tozalash'}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+          {/* Filter */}
+          <StoreFilter
+            tab={tab}
+            lang={lang}
+            regions={regions}
+            filterRegion={filterRegion}
+            setFilterRegion={setFilterRegion}
+            filterMinPrice={filterMinPrice}
+            filterMaxPrice={filterMaxPrice}
+            setFilterMinPrice={setFilterMinPrice}
+            setFilterMaxPrice={setFilterMaxPrice}
+            filterMinKm={filterMinKm}
+            filterMaxKm={filterMaxKm}
+            setFilterMinKm={setFilterMinKm}
+            setFilterMaxKm={setFilterMaxKm}
+            userCoords={userCoords}
+            hasFilter={hasFilter}
+            resetAll={resetAll}
+            searchActive={!!search.trim()}
+          />
         </div>
       </div>
 
