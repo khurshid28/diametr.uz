@@ -8,6 +8,7 @@ import NotFound from './components/404/notFound';
 import CategoryPage from './pages/CategoryPage';
 import ShopsPage from './pages/ShopsPage';
 import ShopDetailPage from './pages/ShopDetailPage';
+import StorePage from './pages/StorePage';
 import { AppProvider } from './context/AppContext';
 import { CartProvider } from './context/CartContext';
 import { ToastContainer } from 'react-toastify';
@@ -30,6 +31,7 @@ function App() {
           <Routes >
             <Route path="/" >
               <Route index element={<Home />} />
+              <Route path="store" element={<StorePage />} />
               <Route path="category/:id" element={<CategoryPage />} />
               <Route path="shops" element={<ShopsPage />} />
               <Route path="shop/:id" element={<ShopDetailPage />} />

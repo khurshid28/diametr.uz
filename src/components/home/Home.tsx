@@ -1,5 +1,5 @@
 ﻿import React, { useState, useCallback, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from "./sections/navbar"
 import Main from "./sections/main"
 import CategoryGrid from "./sections/categoryGrid"
@@ -20,6 +20,7 @@ import { useLang } from '../../context/AppContext'
 export default function Home() {
   const { lang } = useLang()
   const location = useLocation()
+  const navigate = useNavigate()
   const [user, setUser] = useState<AuthUser | null>(() => authService.getUser())
   const [authOpen, setAuthOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
@@ -27,8 +28,8 @@ export default function Home() {
   const [splashDone, setSplashDone] = useState(false)
 
   const handleSplashDone = useCallback(() => {
-    setSplashDone(true)
-  }, [])
+    navigate('/store')
+  }, [navigate])
 
   useEffect(() => {
     const state = location.state as { scrollTo?: string } | null
