@@ -346,11 +346,15 @@ export default function ShopsPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                       </svg>
                       <span className="flex-1 min-w-0 truncate">{shop.address}</span>
-                      {userCoords && shop.lat && shop.lon && (
-                        <span className="ml-1 inline-flex items-center gap-0.5 bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0">
-                          {formatKm(haversineKm(userCoords.lat, userCoords.lon, shop.lat, shop.lon))}
-                        </span>
-                      )}
+                    </p>
+                  )}
+                  {userCoords && shop.lat && shop.lon && (
+                    <p className="text-xs font-bold text-primary flex items-center gap-1">
+                      <svg className="w-3 h-3 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                      </svg>
+                      {formatKm(haversineKm(userCoords.lat, userCoords.lon, shop.lat, shop.lon))} {lang === 'uz' ? 'sizdan' : 'от вас'}
                     </p>
                   )}
                   {shop.delivery_amount != null && (
