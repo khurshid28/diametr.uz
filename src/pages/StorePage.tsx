@@ -75,7 +75,7 @@ export default function StorePage() {
   const { lang } = useLang()
   const navigate = useNavigate()
 
-  const [tab, setTab] = useState<'categories' | 'shops' | 'products'>('categories')
+  const [tab, setTab] = useState<'categories' | 'shops'>('categories')
   const [user, setUser] = useState<AuthUser | null>(() => authService.getUser())
   const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null)
 
@@ -177,34 +177,20 @@ export default function StorePage() {
   const filteredCategories = useMemo(() => {
     if (!search.trim()) return categories
     const q = search.toLowerCase()
-    return categories.filter(c => {
-      if (
-        (c.name_uz || '').toLowerCase().includes(q) ||
-        (c.name_ru || '').toLowerCase().includes(q) ||
-        (c.name || '').toLowerCase().includes(q)
-      ) return true
-      return products.some(
-        p =>
-          p.category?.id === c.id &&
-          (
-            (p.name_uz || '').toLowerCase().includes(q) ||
-            (p.name_ru || '').toLowerCase().includes(q) ||
-            (p.name || '').toLowerCase().includes(q)
-          )
-      )
-    })
-  }, [categories, products, search])
+    return categories.filter(c =>
+      (c.name_uz || '').toLowerCase().includes(q) ||
+      (c.name_ru || '').toLowerCase().includes(q) ||
+      (c.name || '').toLowerCase().includes(q)
+    )
+  }, [categories, search])
 
   const filteredProducts = useMemo(() => {
-    if (!search.trim()) return products
+    if (!search.trim()) return []
     const q = search.toLowerCase()
     return products.filter(p =>
       (p.name_uz || '').toLowerCase().includes(q) ||
       (p.name_ru || '').toLowerCase().includes(q) ||
-      (p.name || '').toLowerCase().includes(q) ||
-      (p.category?.name_uz || '').toLowerCase().includes(q) ||
-      (p.category?.name_ru || '').toLowerCase().includes(q) ||
-      (p.category?.name || '').toLowerCase().includes(q)
+      (p.name || '').toLowerCase().includes(q)
     )
   }, [products, search])
 
@@ -234,7 +220,7 @@ export default function StorePage() {
       <div className="sticky top-[76px] z-30 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3">
-            {(['categories', 'products', 'shops'] as const).map(t => (
+            {(['categories', 'shops'] as const).map(t => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setSearch('') }}
@@ -245,8 +231,6 @@ export default function StorePage() {
                   }`}
               >
                 {t === 'categories'
-                  ? lang === 'ru' ? 'Категории' : 'Kategoriyalar'
-                  : t === 'products'
                   ? lang === 'ru' ? 'Товары' : 'Mahsulotlar'
                   : lang === 'ru' ? 'Магазины' : "Do'konlar"}
                 {tab === t && (
@@ -264,8 +248,6 @@ export default function StorePage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder={tab === 'categories'
-                  ? (lang === 'ru' ? 'Категория...' : 'Kategoriya...')
-                  : tab === 'products'
                   ? (lang === 'ru' ? 'Товар...' : 'Mahsulot...')
                   : (lang === 'ru' ? 'Do\'kon...' : "Do'kon...")}
                 className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
@@ -286,140 +268,106 @@ export default function StorePage() {
         {/* ── CATEGORIES TAB ── */}
         {tab === 'categories' && (
           <>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-5">
-              {lang === 'ru' ? 'Категории' : 'Kategoriyalar'}
-            </h1>
-            {catsLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                {SKELETONS.map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse border border-slate-100 dark:border-slate-700"
-                  >
-                    <div className="h-28 bg-slate-200 dark:bg-slate-700 w-full" />
-                    <div className="px-3 py-2.5">
-                      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-                    </div>
+            {/* — No search: show all categories — */}
+            {!search.trim() && (
+              <>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-5">
+                  {lang === 'ru' ? 'Товары' : 'Mahsulotlar'}
+                </h1>
+                {catsLoading ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                    {SKELETONS.map((_, i) => (
+                      <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse border border-slate-100 dark:border-slate-700">
+                        <div className="h-28 bg-slate-200 dark:bg-slate-700 w-full" />
+                        <div className="px-3 py-2.5"><div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4" /></div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : categories.length === 0 ? (
-              <p className="text-center py-16 text-slate-400">
-                {lang === 'ru' ? 'Категории не найдены' : 'Kategoriyalar topilmadi'}
-              </p>
-            ) : filteredCategories.length === 0 ? (
-              <p className="text-center py-16 text-slate-400">
-                {lang === 'ru' ? `По "${search}" ничего не найдено` : `"${search}" bo'yicha topilmadi`}
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                {filteredCategories.map(cat => {
-                  const count = productCounts[cat.id] || 0
-                  return (
-                    <div
-                      key={cat.id}
-                      onClick={() => navigate(`/category/${cat.id}`)}
-                      className="group relative flex flex-col bg-white dark:bg-slate-800 border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
-                    >
-                      {/* Image */}
-                      <div className="relative h-28 sm:h-32 bg-gradient-to-br from-primary/5 to-slate-100 dark:from-primary/10 dark:to-slate-700 overflow-hidden">
-                        {cat.image ? (
-                          <img
-                            src={`${BASE_URL}/static/categories/${cat.image}`}
-                            alt={getCatName(cat)}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={e => ((e.currentTarget as HTMLImageElement).style.display = 'none')}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <span className="text-4xl group-hover:scale-110 transition-transform duration-200">📦</span>
+                ) : categories.length === 0 ? (
+                  <p className="text-center py-16 text-slate-400">{lang === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}</p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                    {categories.map(cat => {
+                      const count = productCounts[cat.id] || 0
+                      return (
+                        <div key={cat.id} onClick={() => navigate(`/category/${cat.id}`)} className="group relative flex flex-col bg-white dark:bg-slate-800 border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
+                          <div className="relative h-28 sm:h-32 bg-gradient-to-br from-primary/5 to-slate-100 dark:from-primary/10 dark:to-slate-700 overflow-hidden">
+                            {cat.image ? (<img src={`${BASE_URL}/static/categories/${cat.image}`} alt={getCatName(cat)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={e => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />) : (<div className="w-full h-full flex items-center justify-center"><span className="text-4xl group-hover:scale-110 transition-transform duration-200">📦</span></div>)}
+                            {count > 0 && (<span className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">{formatCount(count)}</span>)}
                           </div>
-                        )}
-                        {count > 0 && (
-                          <span className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
-                            {formatCount(count)}
-                          </span>
-                        )}
-                      </div>
-                      {/* Name */}
-                      <div className="px-3 py-2.5 flex items-center justify-between gap-2">
-                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                          {getCatName(cat)}
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 flex-shrink-0 text-slate-300 dark:text-slate-500 group-hover:text-primary transition-colors">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                        </svg>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </>
-        )}
-
-        {/* ── PRODUCTS TAB ── */}
-        {tab === 'products' && (
-          <>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-5">
-              {lang === 'ru' ? 'Товары' : 'Mahsulotlar'}
-            </h1>
-            {catsLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                {SKELETONS.map((_, i) => (
-                  <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse border border-slate-100 dark:border-slate-700">
-                    <div className="h-28 bg-slate-200 dark:bg-slate-700 w-full" />
-                    <div className="px-3 py-2.5 space-y-1.5">
-                      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-                      <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded w-1/2" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : filteredProducts.length === 0 ? (
-              <p className="text-center py-16 text-slate-400">
-                {search ? (lang === 'ru' ? `По "${search}" ничего не найдено` : `"${search}" bo'yicha topilmadi`) : (lang === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi')}
-              </p>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                {filteredProducts.map(prod => (
-                  <div
-                    key={prod.id}
-                    onClick={() => prod.category?.id && navigate(`/category/${prod.category.id}`)}
-                    className="group flex flex-col bg-white dark:bg-slate-800 border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
-                  >
-                    <div className="relative h-28 sm:h-32 bg-gradient-to-br from-primary/5 to-slate-100 dark:from-primary/10 dark:to-slate-700 overflow-hidden">
-                      {prod.image ? (
-                        <img
-                          src={`${BASE_URL}/static/product-items/${prod.image}`}
-                          alt={getProductName(prod)}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={e => { (e.currentTarget as HTMLImageElement).src = `${BASE_URL}/static/products/${prod.image}` }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-4xl group-hover:scale-110 transition-transform duration-200">📦</span>
+                          <div className="px-3 py-2.5 flex items-center justify-between gap-2">
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-snug group-hover:text-primary transition-colors line-clamp-2">{getCatName(cat)}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 flex-shrink-0 text-slate-300 dark:text-slate-500 group-hover:text-primary transition-colors"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                    <div className="px-3 py-2.5 flex flex-col gap-0.5">
-                      <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                        {getProductName(prod)}
-                      </span>
-                      {prod.price != null && prod.price > 0 && (
-                        <span className="text-xs font-bold text-primary">
-                          {prod.price.toLocaleString()} {lang === 'ru' ? 'сум' : "so'm"}
-                        </span>
-                      )}
-                      {prod.category && (
-                        <span className="text-[10px] text-slate-400 line-clamp-1">
-                          {lang === 'ru' ? prod.category.name_ru || prod.category.name_uz || prod.category.name : prod.category.name_uz || prod.category.name_ru || prod.category.name}
-                        </span>
-                      )}
-                    </div>
+                      )
+                    })}
                   </div>
-                ))}
-              </div>
+                )}
+              </>
+            )}
+
+            {/* — Search active: show categories + products separately — */}
+            {search.trim() && (
+              <>
+                {/* Section: Kategoriyalar */}
+                <div className="mb-8">
+                  <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+                    {lang === 'ru' ? 'Категории' : 'Kategoriyalar'}
+                    <span className="ml-2 text-primary">{filteredCategories.length}</span>
+                  </h2>
+                  {filteredCategories.length === 0 ? (
+                    <p className="text-slate-400 text-sm py-4">{lang === 'ru' ? 'Нет совпадений' : 'Topilmadi'}</p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                      {filteredCategories.map(cat => {
+                        const count = productCounts[cat.id] || 0
+                        return (
+                          <div key={cat.id} onClick={() => navigate(`/category/${cat.id}`)} className="group relative flex flex-col bg-white dark:bg-slate-800 border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
+                            <div className="relative h-28 sm:h-32 bg-gradient-to-br from-primary/5 to-slate-100 dark:from-primary/10 dark:to-slate-700 overflow-hidden">
+                              {cat.image ? (<img src={`${BASE_URL}/static/categories/${cat.image}`} alt={getCatName(cat)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={e => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />) : (<div className="w-full h-full flex items-center justify-center"><span className="text-4xl">📦</span></div>)}
+                              {count > 0 && (<span className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">{formatCount(count)}</span>)}
+                            </div>
+                            <div className="px-3 py-2.5 flex items-center justify-between gap-2">
+                              <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-snug group-hover:text-primary transition-colors line-clamp-2">{getCatName(cat)}</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 flex-shrink-0 text-slate-300 dark:text-slate-500 group-hover:text-primary transition-colors"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Section: Mahsulotlar */}
+                <div>
+                  <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+                    {lang === 'ru' ? 'Товары' : 'Mahsulotlar'}
+                    <span className="ml-2 text-primary">{filteredProducts.length}</span>
+                  </h2>
+                  {filteredProducts.length === 0 ? (
+                    <p className="text-slate-400 text-sm py-4">{lang === 'ru' ? 'Нет совпадений' : 'Topilmadi'}</p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                      {filteredProducts.map(prod => (
+                        <div key={prod.id} onClick={() => prod.category?.id && navigate(`/category/${prod.category.id}`)} className="group flex flex-col bg-white dark:bg-slate-800 border border-primary/20 dark:border-slate-700 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
+                          <div className="relative h-28 sm:h-32 bg-gradient-to-br from-primary/5 to-slate-100 dark:from-primary/10 dark:to-slate-700 overflow-hidden">
+                            {prod.image ? (<img src={`${BASE_URL}/static/products/${prod.image}`} alt={getProductName(prod)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={e => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />) : (<div className="w-full h-full flex items-center justify-center"><span className="text-4xl">📦</span></div>)}
+                          </div>
+                          <div className="px-3 py-2.5 flex flex-col gap-0.5">
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-snug group-hover:text-primary transition-colors line-clamp-2">{getProductName(prod)}</span>
+                            {prod.category && (
+                              <span className="text-[10px] text-slate-400 line-clamp-1">
+                                {lang === 'ru' ? prod.category.name_ru || prod.category.name_uz || prod.category.name : prod.category.name_uz || prod.category.name_ru || prod.category.name}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </>
         )}
