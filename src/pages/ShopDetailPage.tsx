@@ -40,6 +40,22 @@ function formatJoinDate(iso?: string, lang?: string) {
   } catch { return null }
 }
 
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371
+  const toRad = (v: number) => (v * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function formatKm(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)} m`
+  return `${km % 1 === 0 ? km.toFixed(0) : km.toFixed(1)} km`
+}
+
 interface ShopProductRaw {
   id: number
   price?: number
@@ -89,8 +105,24 @@ export default function ShopDetailPage() {
   const [activeCatId, setActiveCatId] = useState<number | null>(null)
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
+  const [distanceKm, setDistanceKm] = useState<number | null>(null)
 
   const revealRef = useScrollReveal()
+
+  // Silently get user location and calculate distance to shop
+  useEffect(() => {
+    setDistanceKm(null)
+    if (!shop?.lat || !shop?.lon) return
+    if (!navigator?.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const km = haversineKm(pos.coords.latitude, pos.coords.longitude, shop.lat!, shop.lon!)
+        setDistanceKm(km)
+      },
+      () => {}, // silently ignore if denied / unavailable
+      { timeout: 8000, maximumAge: 300_000, enableHighAccuracy: false },
+    )
+  }, [shop?.lat, shop?.lon]) // eslint-disable-line
 
   useEffect(() => {
     if (!id) return
@@ -319,7 +351,15 @@ export default function ShopDetailPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                       </svg>
-                      {shop.address}
+                      <span>{shop.address}</span>
+                      {distanceKm !== null && (
+                        <span className="ml-1.5 inline-flex items-center gap-1 bg-primary/10 text-primary text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                          <svg className="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 12 3v0a2.25 2.25 0 0 1 2.25 2.25v.75m0 0h.75A2.25 2.25 0 0 1 17.25 8.25V12m0 0v4.5A2.25 2.25 0 0 1 15 18.75H9a2.25 2.25 0 0 1-2.25-2.25V12m10.5 0H6.75" />
+                          </svg>
+                          {formatKm(distanceKm)}
+                        </span>
+                      )}
                     </p>
                   )}
 
@@ -417,12 +457,16 @@ export default function ShopDetailPage() {
                     </div>
                     {shop.lat && shop.lon ? (
                       <p className="text-sm font-bold text-primary leading-tight group-hover:underline">
-                        {lang === 'uz' ? "Ko'rish ↓" : 'Смотреть ↓'}
+                        {distanceKm !== null ? formatKm(distanceKm) : (lang === 'uz' ? "Ko'rish ↓" : 'Смотреть ↓')}
                       </p>
                     ) : (
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">—</p>
                     )}
-                    <p className="text-[10px] text-slate-400">{lang === 'uz' ? 'lokatsiya' : 'местоположение'}</p>
+                    <p className="text-[10px] text-slate-400">
+                      {distanceKm !== null
+                        ? (lang === 'uz' ? 'sizdan · Ko\'rish ↓' : 'от вас · Смотреть ↓')
+                        : (lang === 'uz' ? 'lokatsiya' : 'местоположение')}
+                    </p>
                   </div>
                 </div>
               </div>

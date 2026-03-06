@@ -39,6 +39,22 @@ function openYandexMap(lat?: number, lon?: number, name?: string) {
   }
 }
 
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371
+  const toRad = (v: number) => (v * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function formatKm(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)} m`
+  return `${km % 1 === 0 ? km.toFixed(0) : km.toFixed(1)} km`
+}
+
 const SKELETON = Array.from({ length: 12 })
 
 export default function ShopsPage() {
@@ -53,7 +69,17 @@ export default function ShopsPage() {
   const [user, setUser] = useState<AuthUser | null>(() => authService.getUser())
   const [authOpen, setAuthOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
+  const [userCoords, setUserCoords] = useState<{ lat: number; lon: number } | null>(null)
   const revealRef = useScrollReveal()
+
+  useEffect(() => {
+    if (!navigator?.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      () => {},
+      { timeout: 8000, maximumAge: 300_000, enableHighAccuracy: false },
+    )
+  }, [])
 
   useEffect(() => {
     axios.get(`${API_URL}/region/all`)
@@ -319,7 +345,12 @@ export default function ShopsPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                       </svg>
-                      {shop.address}
+                      <span className="flex-1 min-w-0 truncate">{shop.address}</span>
+                      {userCoords && shop.lat && shop.lon && (
+                        <span className="ml-1 inline-flex items-center gap-0.5 bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0">
+                          {formatKm(haversineKm(userCoords.lat, userCoords.lon, shop.lat, shop.lon))}
+                        </span>
+                      )}
                     </p>
                   )}
                   {shop.delivery_amount != null && (
