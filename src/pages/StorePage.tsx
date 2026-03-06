@@ -327,10 +327,10 @@ export default function StorePage() {
           </div>
 
           {/* Compact filter row */}
-          {regions.length > 0 && (
-            <div className="pb-2 pt-1">
-              {/* Region chips */}
-              <div className="flex items-center gap-1.5 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+          <div className="pb-2 pt-1">
+            {/* Region chips */}
+            {regions.length > 0 && (
+              <div className="flex items-center gap-1.5 overflow-x-auto mb-1.5" style={{ scrollbarWidth: 'none' }}>
                 <button
                   onClick={() => setFilterRegion('')}
                   className={`flex-shrink-0 h-7 px-3 rounded-full text-xs font-semibold transition-all ${
@@ -349,38 +349,38 @@ export default function StorePage() {
                   >{r}</button>
                 ))}
               </div>
+            )}
 
-              {/* Numeric filters — shops: km range; categories+search: price range */}
-              {(tab === 'shops' || (tab === 'categories' && search.trim())) && (
-                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                  {tab === 'shops' && (
-                    <>
-                      <NumInput value={filterMinKm} onChange={setFilterMinKm} placeholder="Min km" />
-                      <span className="text-slate-300 text-xs">—</span>
-                      <NumInput value={filterMaxKm} onChange={setFilterMaxKm} placeholder="Max km" />
-                      <span className="text-xs text-slate-400">km</span>
-                      {!userCoords && (filterMinKm || filterMaxKm) && (
-                        <span className="text-[10px] text-amber-400">{lang === 'ru' ? '(нужна геолокация)' : '(joylashuv kerak)'}</span>
-                      )}
-                    </>
-                  )}
-                  {tab === 'categories' && search.trim() && (
-                    <>
-                      <NumInput value={filterMinPrice} onChange={setFilterMinPrice} placeholder="Min" />
-                      <span className="text-slate-300 text-xs">—</span>
-                      <NumInput value={filterMaxPrice} onChange={setFilterMaxPrice} placeholder="Max" />
-                      <span className="text-xs text-slate-400">{lang === 'ru' ? 'сум' : "so'm"}</span>
-                    </>
-                  )}
-                  {hasFilter && (
-                    <button onClick={resetAll} className="text-xs text-red-400 hover:text-red-600 font-semibold ml-1">
-                      {lang === 'ru' ? 'Сбросить' : 'Tozalash'}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+            {/* Numeric filters — shops: km range; categories+search: price range */}
+            {(tab === 'shops' || (tab === 'categories' && search.trim())) && (
+              <div className="flex items-center gap-2 flex-wrap">
+                {tab === 'shops' && (
+                  <>
+                    <NumInput value={filterMinKm} onChange={setFilterMinKm} placeholder="Min km" />
+                    <span className="text-slate-300 text-xs">—</span>
+                    <NumInput value={filterMaxKm} onChange={setFilterMaxKm} placeholder="Max km" />
+                    <span className="text-xs text-slate-400">km</span>
+                    {!userCoords && (filterMinKm || filterMaxKm) && (
+                      <span className="text-[10px] text-amber-400">{lang === 'ru' ? '(нужна геолокация)' : '(joylashuv kerak)'}</span>
+                    )}
+                  </>
+                )}
+                {tab === 'categories' && search.trim() && (
+                  <>
+                    <NumInput value={filterMinPrice} onChange={setFilterMinPrice} placeholder="Min" />
+                    <span className="text-slate-300 text-xs">—</span>
+                    <NumInput value={filterMaxPrice} onChange={setFilterMaxPrice} placeholder="Max" />
+                    <span className="text-xs text-slate-400">{lang === 'ru' ? 'сум' : "so'm"}</span>
+                  </>
+                )}
+                {hasFilter && (
+                  <button onClick={resetAll} className="text-xs text-red-400 hover:text-red-600 font-semibold ml-1">
+                    {lang === 'ru' ? 'Сбросить' : 'Tozalash'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
