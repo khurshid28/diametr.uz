@@ -134,75 +134,93 @@ export default function ShopDetailPage() {
     setMaxPrice('')
     axios.get(`${API_URL}/shop/${id}`)
       .then(async res => {
-        const data = res.data
-        setShop({
-          id: data.id,
-          name: data.name,
-          image: data.image,
-          address: data.address,
-          lat: data.lat,
-          lon: data.lon,
-          region_id: data.region_id,
-          delivery_amount: data.delivery_amount,
-          yandex_delivery: data.yandex_delivery,
-          market_delivery: data.market_delivery,
-          created_at: data.created_at || data.createdAt,
-        })
-
-        // Fetch region name if available
-        if (data.region_id) {
-          axios.get(`${API_URL}/region/all`)
-            .then(r => {
-              const reg = (r.data as { id: number; name?: string }[]).find(re => re.id === data.region_id)
-              if (reg) setShop(s => s ? { ...s, region: reg } : s)
-            })
-            .catch(() => {})
-        }
-
-        const rawProducts: ShopProductRaw[] = (data.products || []).filter(
-          (p: ShopProductRaw) => p.work_status !== 'STOPPED' && p.price != null
-        )
-
-        // Parallel-fetch all product items
-        const enriched: EnrichedProduct[] = await Promise.all(
-          rawProducts.map(async (sp): Promise<EnrichedProduct> => {
-            if (!sp.product_item_id) return { ...sp }
-            try {
-              const itemRes = await axios.get(`${API_URL}/product-item/${sp.product_item_id}`)
-              return { ...sp, item: itemRes.data as ProductItem }
-            } catch {
-              return { ...sp }
-            }
+        try {
+          const data = res.data
+          setShop({
+            id: data.id,
+            name: data.name,
+            image: data.image,
+            address: data.address,
+            lat: data.lat,
+            lon: data.lon,
+            region_id: data.region_id,
+            delivery_amount: data.delivery_amount,
+            yandex_delivery: data.yandex_delivery,
+            market_delivery: data.market_delivery,
+            created_at: data.created_at || data.createdAt,
           })
-        )
 
-        // Fetch unique products to get category info
-        const uniqueProductIds = Array.from(
-          new Set(
-            enriched
-              .map(p => p.item?.product_id)
-              .filter((pid): pid is number => pid !== undefined)
-          )
-        )
-        const categoryMap: Record<number, ShopCategory> = {}
-        await Promise.all(
-          uniqueProductIds.map(pid =>
-            axios.get(`${API_URL}/product/${pid}`)
+          // Fetch region name if available
+          if (data.region_id) {
+            axios.get(`${API_URL}/region/all`)
               .then(r => {
-                if (r.data?.category) categoryMap[pid] = r.data.category as ShopCategory
+                const reg = (r.data as { id: number; name?: string }[]).find(re => re.id === data.region_id)
+                if (reg) setShop(s => s ? { ...s, region: reg } : s)
               })
               .catch(() => {})
-          )
-        )
+          }
 
-        const enrichedWithCat: EnrichedProduct[] = enriched.map(e => ({
-          ...e,
-          category: e.item?.product_id ? categoryMap[e.item.product_id] : undefined,
-        }))
-        setProducts(enrichedWithCat)
+          const rawProducts: ShopProductRaw[] = (data.products || []).filter(
+            (p: ShopProductRaw) => p.work_status !== 'STOPPED' && p.price != null
+          )
+
+          // Parallel-fetch all product items
+          const enriched: EnrichedProduct[] = await Promise.all(
+            rawProducts.map(async (sp): Promise<EnrichedProduct> => {
+              if (!sp.product_item_id) return { ...sp }
+              try {
+                const itemRes = await axios.get(`${API_URL}/product-item/${sp.product_item_id}`)
+                return { ...sp, item: itemRes.data as ProductItem }
+              } catch {
+                return { ...sp }
+              }
+            })
+          )
+
+          // Fetch unique products to get category info
+          const uniqueProductIds = Array.from(
+            new Set(
+              enriched
+                .map(p => p.item?.product_id)
+                .filter((pid): pid is number => pid !== undefined)
+            )
+          )
+          const categoryMap: Record<number, ShopCategory> = {}
+          await Promise.all(
+            uniqueProductIds.map(pid =>
+              axios.get(`${API_URL}/product/${pid}`)
+                .then(r => {
+                  if (r.data?.category) categoryMap[pid] = r.data.category as ShopCategory
+                })
+                .catch(() => {})
+            )
+          )
+
+          const enrichedWithCat: EnrichedProduct[] = enriched.map(e => ({
+            ...e,
+            category: e.item?.product_id ? categoryMap[e.item.product_id] : undefined,
+          }))
+          setProducts(enrichedWithCat)
+        } catch {
+          // data processing failed but shop loaded — just show empty products
+          setProducts([])
+        }
       })
       .catch(() => {
-        toast.error(lang === 'uz' ? "Do'kon topilmadi" : 'Магазин не найден')
+        toast.error(
+          <div className="flex items-center gap-3 px-3 py-1">
+            <span className="w-8 h-8 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+              </svg>
+            </span>
+            <div>
+              <p className="text-sm font-bold text-slate-800">{lang === 'uz' ? "Do'kon topilmadi" : 'Магазин не найден'}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{lang === 'uz' ? 'Sahifa mavjud emas' : 'Страница не существует'}</p>
+            </div>
+          </div>,
+          { icon: false, style: { padding: 0 } }
+        )
         navigate('/shops')
       })
       .finally(() => setLoading(false))
