@@ -164,8 +164,12 @@ export default function StorePage() {
   const filteredCategories = useMemo(() => {
     if (!search.trim()) return categories
     const q = search.toLowerCase()
-    return categories.filter(c => getCatName(c).toLowerCase().includes(q))
-  }, [categories, search, getCatName])
+    return categories.filter(c =>
+      (c.name_uz || '').toLowerCase().includes(q) ||
+      (c.name_ru || '').toLowerCase().includes(q) ||
+      (c.name || '').toLowerCase().includes(q)
+    )
+  }, [categories, search])
 
   const handleAuth = useCallback(() => setUser(authService.getUser()), [])
   const handleLogout = useCallback(() => { authService.logout(); setUser(null) }, [])

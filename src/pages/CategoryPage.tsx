@@ -203,7 +203,13 @@ export default function CategoryPage() {
     ? (lang === 'uz' ? 'Barcha mahsulotlar' : 'Все товары')
     : (category ? getName(category) : '...')
   const filtered = products.filter(p => {
-    if (!getName(p).toLowerCase().includes(search.toLowerCase())) return false
+    const q = search.toLowerCase()
+    const matchName =
+      !q ||
+      (p.name_uz || '').toLowerCase().includes(q) ||
+      (p.name_ru || '').toLowerCase().includes(q) ||
+      (p.name || '').toLowerCase().includes(q)
+    if (!matchName) return false
     const price = pricesMap[p.id]
     if (price != null) {
       if (minPrice && price < Number(parseInput(minPrice))) return false
