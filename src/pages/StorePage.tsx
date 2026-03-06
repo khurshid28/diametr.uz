@@ -102,6 +102,7 @@ export default function StorePage() {
   const [shopsLoading, setShopsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterRegion, setFilterRegion] = useState('')
+  const [filterShopRegions, setFilterShopRegions] = useState<string[]>([])
   // shops filters
   const [filterMinKm, setFilterMinKm] = useState('')
   const [filterMaxKm, setFilterMaxKm] = useState('')
@@ -195,7 +196,7 @@ export default function StorePage() {
         (s.region?.name || '').toLowerCase().includes(q)
       )
     }
-    if (filterRegion) list = list.filter(s => s.region?.name === filterRegion)
+    if (filterShopRegions.length > 0) list = list.filter(s => filterShopRegions.includes(s.region?.name || ''))
     if (userCoords && (filterMinKm || filterMaxKm)) {
       list = list.filter(s => {
         if (!s.lat || !s.lon) return true
@@ -206,7 +207,7 @@ export default function StorePage() {
       })
     }
     return list
-  }, [shops, search, filterRegion, filterMinKm, filterMaxKm, userCoords])
+  }, [shops, search, filterShopRegions, filterMinKm, filterMaxKm, userCoords])
 
   const filteredCategories = useMemo(() => {
     let list = categories
@@ -258,8 +259,8 @@ export default function StorePage() {
   const handleAuth = useCallback(() => setUser(authService.getUser()), [])
   const handleLogout = useCallback(() => { authService.logout(); setUser(null) }, [])
 
-  const hasFilter = !!(filterRegion || filterMinKm || filterMaxKm || filterMinPrice || filterMaxPrice)
-  const resetAll = () => { setFilterRegion(''); setFilterMinKm(''); setFilterMaxKm(''); setFilterMinPrice(''); setFilterMaxPrice('') }
+  const hasFilter = !!(filterRegion || filterShopRegions.length > 0 || filterMinKm || filterMaxKm || filterMinPrice || filterMaxPrice)
+  const resetAll = () => { setFilterRegion(''); setFilterShopRegions([]); setFilterMinKm(''); setFilterMaxKm(''); setFilterMinPrice(''); setFilterMaxPrice('') }
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900 transition-colors duration-300">
@@ -276,8 +277,8 @@ export default function StorePage() {
       <div className="sticky top-[76px] z-30 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
 
-          {/* Row 1 — Region chips (above tabs) */}
-          {regions.length > 0 && (
+          {/* Row 1 — Region chips (above tabs, only for categories) */}
+          {regions.length > 0 && tab === 'categories' && (
             <div className="flex items-center gap-1.5 overflow-x-auto pt-2 pb-2" style={{ scrollbarWidth: 'none' }}>
               <button
                 onClick={() => setFilterRegion('')}
@@ -357,6 +358,9 @@ export default function StorePage() {
               userCoords={userCoords}
               hasFilter={hasFilter}
               resetAll={resetAll}
+              regions={regions}
+              filterShopRegions={filterShopRegions}
+              setFilterShopRegions={setFilterShopRegions}
             />
           </div>
         </div>
@@ -475,9 +479,10 @@ export default function StorePage() {
         {/* ── SHOPS TAB ── */}
         {tab === 'shops' && (
           <>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
               {lang === 'ru' ? 'Магазины' : "Do'konlar"}
             </h1>
+
 
 
             {shopsLoading ? (
