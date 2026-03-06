@@ -205,6 +205,7 @@ export default function ShopDetailPage() {
       productImage: sp.item?.image,
       shopId: shop.id,
       shopName,
+      deliveryAmount: shop.delivery_amount,
       price: sp.price!,
       maxQty: sp.count || undefined,
     })
@@ -241,7 +242,7 @@ export default function ShopDetailPage() {
           <p className="text-[11px] text-[#00C48C] font-semibold truncate">{shopName} · {sp.price!.toLocaleString()} {lang === 'uz' ? "so'm" : 'сум'}</p>
         </div>
       </div>,
-      { icon: false }
+      { icon: false, autoClose: 2500 }
     )
   }, [shop, addItem, lang])
 

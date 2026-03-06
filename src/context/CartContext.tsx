@@ -8,6 +8,7 @@ export interface CartItem {
   productImage?: string
   shopId: number
   shopName: string
+  deliveryAmount?: number
   price: number
   qty: number
   maxQty?: number

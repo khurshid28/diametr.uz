@@ -46,9 +46,20 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
   const [modalAddress, setModalAddress] = useState('')
   const [modalLocLoading, setModalLocLoading] = useState(false)
 
+  // Delivery: har bir do'kon uchun bitta yetkazib berish narxi
+  const totalDelivery = items.reduce((acc, item) => {
+    if (!acc.seen.has(item.shopId)) {
+      acc.seen.add(item.shopId)
+      acc.sum += item.deliveryAmount ?? 0
+    }
+    return acc
+  }, { seen: new Set<number>(), sum: 0 }).sum
+
   const discountedTotal = promoDiscount > 0
     ? Math.round(total - (total * promoDiscount) / 100)
     : total
+
+  const grandTotal = discountedTotal + totalDelivery
 
   const fmtPrice = (n: number) =>
     n.toLocaleString('uz-UZ') + (lang === 'uz' ? " so'm" : ' sum')
@@ -161,7 +172,7 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
       const shopId = items[0]?.shopId ?? 0
       const body = {
         shop_id: shopId,
-        amount: discountedTotal,
+        amount: grandTotal,
         products: items.map(i => ({ shop_product_id: i.shopProductId, count: i.qty })),
         payment_type: paymentType,
         address: address.trim(),
@@ -316,9 +327,15 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
                       <span>-{fmtPrice(total - discountedTotal)}</span>
                     </div>
                   )}
+                  {totalDelivery > 0 && (
+                    <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400">
+                      <span>{lang === 'uz' ? 'Yetkazib berish' : 'Доставка'}</span>
+                      <span>+{fmtPrice(totalDelivery)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between font-bold text-slate-800 dark:text-white text-sm pt-1 border-t border-slate-200 dark:border-slate-600">
                     <span>{lang === 'uz' ? "To'lov summasi" : "To'lov summasi"}</span>
-                    <span className="text-primary">{fmtPrice(discountedTotal)}</span>
+                    <span className="text-primary">{fmtPrice(grandTotal)}</span>
                   </div>
                 </div>
               </div>
@@ -619,8 +636,18 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
         {step === 'cart' && items.length > 0 && (
           <div className="px-5 py-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-500 dark:text-slate-400">{lang === 'uz' ? 'Jami' : 'Jami'}</span>
-              <span className="text-lg font-bold text-primary">{fmtPrice(total)}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{lang === 'uz' ? 'Mahsulotlar' : 'Mahsulotlar'}</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{fmtPrice(total)}</span>
+            </div>
+            {totalDelivery > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-slate-500 dark:text-slate-400">{lang === 'uz' ? 'Yetkazib berish' : 'Доставка'}</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">+{fmtPrice(totalDelivery)}</span>
+              </div>
+            )}
+            <div className="flex justify-between items-center border-t border-slate-100 dark:border-slate-700 pt-2">
+              <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{lang === 'uz' ? 'Jami' : 'Jami'}</span>
+              <span className="text-lg font-bold text-primary">{fmtPrice(grandTotal)}</span>
             </div>
             {!user ? (
               <button onClick={onAuthRequired}
