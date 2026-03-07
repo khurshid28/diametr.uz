@@ -22,7 +22,7 @@ interface Order {
   payment_type?: string
   discount_percent?: number
   discount_amount?: number
-  createdt: string
+  createdAt: string
   shop?: { id: number; name: string; image?: string }
   products: OrderProduct[]
 }
@@ -202,7 +202,7 @@ export default function OrdersDrawer({ open, onClose }: Props) {
                           </span>
                         </div>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-xs text-slate-400 dark:text-slate-500">{fmtDate(order.createdt, lang)}</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-500">{fmtDate(order.createdAt ?? (order as any).createdt ?? '', lang)}</span>
                           <span className="text-xs font-bold text-primary">{fmtPrice(order.amount)}</span>
                         </div>
                         {order.discount_amount ? (

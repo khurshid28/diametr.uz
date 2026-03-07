@@ -30,7 +30,7 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
   const [onlineMethod, setOnlineMethod] = useState<OnlineMethod>('payme')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [orderId, setOrderId] = useState<number | null>(null)
+  const [orderIds, setOrderIds] = useState<number[]>([])
 
   // Promo code
   const [promoInput, setPromoInput] = useState('')
@@ -158,7 +158,7 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
     setPromoSuccess('')
   }
 
-  // Submit order
+  // Submit order — one order per shop when cart has multiple shops
   const handleCheckout = async () => {
     if (!user) { onAuthRequired(); return }
     if (!address.trim()) {
@@ -167,33 +167,57 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
     }
     setError('')
     setLoading(true)
+
+    // group cart items by shopId
+    const byShop = items.reduce<Record<number, typeof items>>((acc, item) => {
+      if (!acc[item.shopId]) acc[item.shopId] = []
+      acc[item.shopId].push(item)
+      return acc
+    }, {})
+
+    const paymentType = payMode === 'cash' ? 'cash' : onlineMethod
+    const collectedIds: number[] = []
+    let firstPayUrl: string | null = null
+
     try {
-      const paymentType = payMode === 'cash' ? 'cash' : onlineMethod
-      const shopId = items[0]?.shopId ?? 0
-      const body = {
-        shop_id: shopId,
-        amount: grandTotal,
-        products: items.map(i => ({ shop_product_id: i.shopProductId, count: i.qty })),
-        payment_type: paymentType,
-        address: address.trim(),
-        delivery_type: 'MARKET',
-        ...(coords ? { lat: coords.lat, lon: coords.lng } : {}),
-        ...(promoCode ? { promo_code: promoCode } : {}),
+      for (const [shopIdStr, shopItems] of Object.entries(byShop)) {
+        const shopId = Number(shopIdStr)
+        const shopTotal = shopItems.reduce((s, i) => s + i.price * i.qty, 0)
+        const shopDelivery = (shopItems[0]?.deliveryAmount ?? 0)
+        const shopDiscount = promoDiscount > 0
+          ? Math.round(shopTotal - (shopTotal * promoDiscount) / 100)
+          : shopTotal
+        const shopGrand = shopDiscount + shopDelivery
+
+        const body = {
+          shop_id: shopId,
+          amount: shopGrand,
+          products: shopItems.map(i => ({ shop_product_id: i.shopProductId, count: i.qty })),
+          payment_type: paymentType,
+          address: address.trim(),
+          delivery_type: 'FIXED',
+          ...(coords ? { lat: coords.lat, lon: coords.lng } : {}),
+          ...(promoCode ? { promo_code: promoCode } : {}),
+        }
+        const res = await authService.apiFetch(`${BASE_URL}/api/v1/order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}))
+          throw new Error(err.message || `Error ${res.status}`)
+        }
+        const data = await res.json()
+        const id = data.id ?? data.orderId ?? data.order_id ?? null
+        if (id) collectedIds.push(Number(id))
+        if (!firstPayUrl && data.paymentUrl) firstPayUrl = data.paymentUrl
       }
-      const res = await authService.apiFetch(`${BASE_URL}/api/v1/order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || `Error ${res.status}`)
-      }
-      const data = await res.json()
-      setOrderId(data.id ?? data.orderId ?? null)
+
+      setOrderIds(collectedIds)
       clearCart()
       setStep('done')
-      if (data.paymentUrl) window.open(data.paymentUrl, '_blank', 'noopener,noreferrer')
+      if (firstPayUrl) window.open(firstPayUrl, '_blank', 'noopener,noreferrer')
     } catch (e) {
       const raw: string = (e as any).message || ''
       let msg = raw
@@ -217,7 +241,7 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
     setEditingAddr(false)
     setPayMode('cash')
     setError('')
-    setOrderId(null)
+    setOrderIds([])
     setPromoInput('')
     setPromoCode('')
     setPromoDiscount(0)
@@ -290,7 +314,11 @@ export default function CartDrawer({ open, onClose, onAuthRequired, user }: Prop
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white">
                   {lang === 'uz' ? 'Buyurtma qabul qilindi!' : 'Buyurtma qabul qilindi!'}
                 </h3>
-                {orderId && <p className="text-primary font-semibold text-sm mt-1">#{orderId}</p>}
+                {orderIds.length > 0 && (
+                  <p className="text-primary font-semibold text-sm mt-1">
+                    {orderIds.map(id => `#${id}`).join('  ·  ')}
+                  </p>
+                )}
                 <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
                   {lang === 'uz' ? "Tez orada siz bilan bog'lanamiz." : "Tez orada siz bilan bog'lanamiz."}
                 </p>
